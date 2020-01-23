@@ -11,7 +11,12 @@ int main()
     while ( luku < maksimi )
     {
             ++luku;
+        if ( luku % 3 == 0 ) {
+             std::cout << "zip" << std::endl;
+    }
+        else {
             std::cout << luku << std::endl;
+        }
 }
 
 
