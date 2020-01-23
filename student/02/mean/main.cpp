@@ -13,7 +13,7 @@ int main()
     if (lukujen_lkm > 0) {
         for ( int i = 1; i <= lukujen_lkm; ++i) {
 
-            std::cout << "Input " << i << " number: ";
+            std::cout << "Input " << i << ". number: ";
             std::cin >> uusi;
             summa = summa + uusi;
         }
