@@ -26,7 +26,7 @@ int main() {
     int lp_arvottavienlkm;
     cin >> lp_arvottavienlkm;
 
-    if (lp_kokonaislkm > 0) {
+    if (lp_kokonaislkm > 0 and lp_arvottavienlkm > 0) {
         tulostus(lp_arvottavienlkm, lp_kokonaislkm);
 
     } else {
