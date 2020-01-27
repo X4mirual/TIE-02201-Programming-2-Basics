@@ -28,13 +28,15 @@ bool tarkistus(string avain) {
 
 void kryptaus(string avain, string& teksti){
     string aakkoset = "abcdefghijklmnopqrstuvwxyz";
-    int pituus = 26 ;//aakkoset.length();
+    int pituus = teksti.length(); //Tekstin pituus
     for (int i = 0; i < pituus; ++i) {
-        char a = aakkoset.at(i);
-        char b = avain.at(i);
+        char kirjain = teksti.at(i); //e: 'k'
+        int monesko = aakkoset.find(kirjain); //e: 11
+        char avaimesta = avain.at(monesko);
+        teksti.at(i) = avaimesta;
+        //std::replace(kirjain, avaimesta);
 
-        std::replace(teksti.begin(), teksti.end(), a, b);
-
+// Tällä hetkellä vaihtaa jo vaihdettuja kirjaimia, joten pitää käydä kirjaimet läpi yksitellen
     }
 }
 
