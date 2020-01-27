@@ -31,12 +31,10 @@ void kryptaus(string avain, string& teksti){
     int pituus = teksti.length(); //Tekstin pituus
     for (int i = 0; i < pituus; ++i) {
         char kirjain = teksti.at(i); //e: 'k'
-        int monesko = aakkoset.find(kirjain); //e: 11
-        char avaimesta = avain.at(monesko);
+        //int monesko = aakkoset.find(kirjain); //e: 11
+        char avaimesta = avain.at(aakkoset.find(kirjain));
         teksti.at(i) = avaimesta;
-        //std::replace(kirjain, avaimesta);
 
-// Tällä hetkellä vaihtaa jo vaihdettuja kirjaimia, joten pitää käydä kirjaimet läpi yksitellen
     }
 }
 
