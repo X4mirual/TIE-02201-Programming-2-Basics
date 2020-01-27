@@ -17,13 +17,13 @@ bool tarkistus(string avain) {
                     "case characters." << endl;
             return false;
         }
-        else if (avain.find(aakkoset.at(n)) == string::npos) {
+        if (avain.find(aakkoset.at(n)) == string::npos) {
             cout << "Error! The encryption key must contain all "
                     "alphabets a-z." << endl;
             return false;
         }
-    return true;
     }
+    return true;
 }
 
 void kryptaus(string avain, string& teksti){
@@ -31,10 +31,8 @@ void kryptaus(string avain, string& teksti){
     int pituus = teksti.length(); //Tekstin pituus
     for (int i = 0; i < pituus; ++i) {
         char kirjain = teksti.at(i); //e: 'k'
-        //int monesko = aakkoset.find(kirjain); //e: 11
         char avaimesta = avain.at(aakkoset.find(kirjain));
         teksti.at(i) = avaimesta;
-
     }
 }
 
@@ -45,7 +43,6 @@ int main()
     getline(cin, avain);
 
     if (tarkistus(avain) == false) {
-        cout << "peruna" << endl;
         return EXIT_FAILURE;
     }
 
