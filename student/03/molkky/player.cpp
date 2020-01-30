@@ -5,7 +5,7 @@ using namespace std;
 
 
 Player::Player(string nimi):
-    nimi_(nimi), pisteet_(pisteet)  {
+    nimi_(nimi)  {
 }
 
 string Player::get_name() const {
@@ -26,6 +26,10 @@ bool Player::has_won() {
 
 void Player::add_points(int lisattavat_pisteet) {
     pisteet_ += lisattavat_pisteet;
+    if (pisteet_ > 50) {
+        cout << nimi_ << " gets penalty points!" << endl;
+        pisteet_ = 25;
+    }
 }
 
 
