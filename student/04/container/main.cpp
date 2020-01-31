@@ -13,56 +13,49 @@ void read_integers(std::vector<int>& ints, int count)
     }
 }
 
-bool same_values(integers) {
+bool same_values(std::vector<int>& integers) {
     int i = 0;
-    int pituus = integers.length();
-    for (int i = 0; i<pituus-1; ++i) {
+    for (int i = 0; i < integers.size() - 1; ++i) {
         if (integers.at(i) != integers.at(i+1)) {
             return false;
         }
     }
 }
 
-bool is_ordered_non_strict_ascending(integers) {
+bool is_ordered_non_strict_ascending(
+        std::vector<int>&integers) {
     int i = 0;
-    int pituus = integers.length();
-    for (int i = 0; i<pituus-1; ++i) {
+    for (int i = 0; i < integers.size() - 1; ++i) {
         if (integers.at(i) > integers.at(i+1)) {
             return false;
         }
     }
+    return true;
 }
 
-bool is_arithmetic_series(integers) {
-    int i = 0;
-    int pituus = integers.length();
-    if (pituus > 0) {
+bool is_arithmetic_series(std::vector<int>& integers) {
+    if (integers.size() > 1) {
         int erotus = integers.at(0) - integers.at(1);
-        for (int i = 0; i<pituus-1; ++i) {
+        for (int i = 0; i < integers.size() - 1; ++i) {
             if (integers.at(i) - integers.at(i+1) != erotus) {
                 return false;
-    }
+            }
         }
-    } else {
-        return false;
+        return true;
     }
 }
 
-bool is_geometric_series(integers) {
-    int i = 0;
-    int pituus = integers.length();
-    if (pituus > 0) {
+bool is_geometric_series(std::vector<int>& integers) {
+    if (integers.size() > 1) {
         int kertoja = integers.at(1) / integers.at(0);
-        for (int i = 0; i<pituus-1; ++i) {
+        for (int i = 0; i < integers.size() - 1; ++i) {
             if (integers.at(i+1) / integers.at(i) != kertoja) {
                 return false;
-            }
+                    }
                 }
-            } else {
-                return false;
+        return true;
             }
 }
-
 
 int main()
 {
