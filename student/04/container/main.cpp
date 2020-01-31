@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 
 void read_integers(std::vector<int>& ints, int count)
@@ -55,12 +56,17 @@ bool is_geometric_series(std::vector<int>& integers) {
     int k = 0;
     if (integers.size() > 1) {
         k = 1;
-        int kertoja = integers.at(1) / integers.at(0);
-        for (unsigned int i = 0; i < integers.size() - 1; ++i) {
-            if (integers.at(i+1) / integers.at(i) != kertoja) {
-                k = 0;
+        int a = 0;
+        if (std::find(integers.begin(), integers.end(), a) != integers.end()) {
+            k = 0;
+        } else {
+            int kertoja = integers.at(1) / integers.at(0);
+            for (unsigned int i = 0; i < integers.size() - 1; ++i) {
+                if (integers.at(i+1) / integers.at(i) != kertoja) {
+                    k = 0;
+                        }
                     }
-                }
+        }
             }
     if (k == 0) {
         return false;
