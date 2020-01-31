@@ -13,6 +13,7 @@ void read_integers(std::vector<int>& ints, int count)
         ints.push_back(new_integer);
     }
 }
+//peruna
 
 bool same_values(std::vector<int>& integers) {
     for (unsigned int i = 0; i < integers.size() - 1; ++i) {
