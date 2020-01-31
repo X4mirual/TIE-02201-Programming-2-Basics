@@ -20,6 +20,7 @@ bool same_values(std::vector<int>& integers) {
             return false;
         }
     }
+    return true;
 }
 
 bool is_ordered_non_strict_ascending(
