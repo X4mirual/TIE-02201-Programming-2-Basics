@@ -14,8 +14,7 @@ void read_integers(std::vector<int>& ints, int count)
 }
 
 bool same_values(std::vector<int>& integers) {
-    int i = 0;
-    for (int i = 0; i < integers.size() - 1; ++i) {
+    for (unsigned int i = 0; i < integers.size() - 1; ++i) {
         if (integers.at(i) != integers.at(i+1)) {
             return false;
         }
@@ -25,8 +24,7 @@ bool same_values(std::vector<int>& integers) {
 
 bool is_ordered_non_strict_ascending(
         std::vector<int>&integers) {
-    int i = 0;
-    for (int i = 0; i < integers.size() - 1; ++i) {
+    for (unsigned int i = 0; i < integers.size() - 1; ++i) {
         if (integers.at(i) > integers.at(i+1)) {
             return false;
         }
@@ -37,7 +35,7 @@ bool is_ordered_non_strict_ascending(
 bool is_arithmetic_series(std::vector<int>& integers) {
     if (integers.size() > 1) {
         int erotus = integers.at(0) - integers.at(1);
-        for (int i = 0; i < integers.size() - 1; ++i) {
+        for (unsigned int i = 0; i < integers.size() - 1; ++i) {
             if (integers.at(i) - integers.at(i+1) != erotus) {
                 return false;
             }
@@ -49,7 +47,7 @@ bool is_arithmetic_series(std::vector<int>& integers) {
 bool is_geometric_series(std::vector<int>& integers) {
     if (integers.size() > 1) {
         int kertoja = integers.at(1) / integers.at(0);
-        for (int i = 0; i < integers.size() - 1; ++i) {
+        for (unsigned int i = 0; i < integers.size() - 1; ++i) {
             if (integers.at(i+1) / integers.at(i) != kertoja) {
                 return false;
                     }
