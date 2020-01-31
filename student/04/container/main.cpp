@@ -33,27 +33,41 @@ bool is_ordered_non_strict_ascending(
 }
 
 bool is_arithmetic_series(std::vector<int>& integers) {
+    int k = 0;
     if (integers.size() > 1) {
+        k = 1;
         int erotus = integers.at(0) - integers.at(1);
         for (unsigned int i = 0; i < integers.size() - 1; ++i) {
             if (integers.at(i) - integers.at(i+1) != erotus) {
-                return false;
+                k = 0;
             }
         }
+    }
+    if (k == 0) {
+        return false;
+    }
+    else {
         return true;
     }
 }
 
 bool is_geometric_series(std::vector<int>& integers) {
+    int k = 0;
     if (integers.size() > 1) {
+        k = 1;
         int kertoja = integers.at(1) / integers.at(0);
         for (unsigned int i = 0; i < integers.size() - 1; ++i) {
             if (integers.at(i+1) / integers.at(i) != kertoja) {
-                return false;
+                k = 0;
                     }
                 }
-        return true;
             }
+    if (k == 0) {
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 int main()
