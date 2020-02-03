@@ -3,13 +3,32 @@
 #include <vector>
 
 
-std::vector<std::string> split(std::string line, char separator) {
+std::vector<std::string> split(std::string line, char separator, bool totuusarvo=false) {
     std::vector<std::string> valmis;
-    std::string segment;
-    separator = '_';
-    std::stringstream testii("peruna_kala_kukko_kiusaus");
-    while(std::getline(testii, segment, separator)) {
-        valmis.push_back(segment);
+    if (totuusarvo == false) {
+        size_t pos = 0;
+        std::string segment;
+        while ((pos = line.find(separator)) != std::string::npos) {
+            segment = line.substr(0, pos);
+            valmis.push_back(segment);
+            line.erase(0, pos + 1);
+        }
+        valmis.push_back(line);
+    }
+    else {
+        size_t pos = 0;
+        std::string segment;
+        while ((pos = line.find(separator)) != std::string::npos) {
+            if (pos!= 0) {
+                segment = line.substr(0, pos);
+                valmis.push_back(segment);
+                line.erase(0, pos + 1);
+            }
+            else {
+                line.erase(0,1);
+            }
+    }
+    valmis.push_back(line);
     }
     return valmis;
 }
