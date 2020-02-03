@@ -3,8 +3,16 @@
 #include <vector>
 
 
-// TODO: Implement split function here
-// Do not change main function
+std::vector<std::string> split(std::string line, char separator) {
+    std::vector<std::string> valmis;
+    std::string segment;
+    separator = '_';
+    std::stringstream testii("peruna_kala_kukko_kiusaus");
+    while(std::getline(testii, segment, separator)) {
+        valmis.push_back(segment);
+    }
+    return valmis;
+}
 
 
 int main()
