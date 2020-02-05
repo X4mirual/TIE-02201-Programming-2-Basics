@@ -21,11 +21,35 @@
 
 #include "board.hh"
 
-// More functions
+void initBoard() {
+    //toteuta tarkastelu, jos syötetään muuta kuin 'y' tai 'n'
+    cout << "Random initialization (y/n): ";
+    std::string arvottu_vai_maaratty; //voidaanko laittaa getlinen sisaan?
+    getline(cin, arvottu_vai_maaratty);
+    if (arvottu_vai_maaratty == "y") {
+        Board kentta = Board();
+        kentta.my_shuffle();
+    }
+    
+    else if (arvottu_vai_maaratty == "n") {
+        
+    }
+    
+}
 
 int main()
 {
-    // More functionality
+    initBoard();
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     return EXIT_SUCCESS;
 }

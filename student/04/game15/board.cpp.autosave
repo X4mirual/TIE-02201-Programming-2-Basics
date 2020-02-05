@@ -41,8 +41,17 @@ void Board::print()
     std::cout << std::string(PRINT_WIDTH * SIZE + 1, '-') << std::endl;
 }
 
+void Board::set_grid(std::vector<unsigned int> &numbers) {
+    //to-do
+}
+
+std::vector<unsigned int> Board::get_grid(std::vector<unsigned int>) {
+    return grid_;
+}
+
+
 void Board::my_shuffle(std::vector<unsigned int> &numbers, int seed)
-{
+{ // syötetään vektori, joka sisältää (unsigned int numbersit, int seedin)
     std::default_random_engine randomEng(seed);
     std::uniform_int_distribution<int> distr(0, numbers.size() - 1);
     for(unsigned int i = 0; i < numbers.size(); ++i)

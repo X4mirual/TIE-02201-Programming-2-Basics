@@ -19,6 +19,9 @@
 
 const int SIZE = 4;
 
+//class Board;
+//using Game = std::vector<std::vector<Board>>;
+
 class Board
 {
 public:
@@ -26,7 +29,10 @@ public:
     // 1. Implement a constructor that fills the game grid with empties or such
     // and two initialize methods
     // 2. Implement two constructors, one for each initialization way
-
+    
+    void set_grid();
+    void get_grid();
+    
     // Prints the game grid
     void print();
 
@@ -36,8 +42,8 @@ private:
     // Shuffles the numbers vector by using seed as a seed value
     void my_shuffle(std::vector<unsigned int>& numbers, int seed);
 
-    // Game grid for the 15 puzzle
-    std::vector<std::vector<unsigned int>> grid_;
+    // Game grid for the 15 puzzle | vektori grid_, jolle tallennetaan luvut
+    std::vector<std::vector<unsigned int>> grid_ = ;
 
     // More attributes/methods
 };
