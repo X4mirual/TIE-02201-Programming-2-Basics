@@ -6,7 +6,38 @@ using namespace std;
 
 void produce_random_numbers(unsigned int lower, unsigned int upper)
 {
-    // Implement your function here
+    std::default_random_engine rand_gen;
+    cout << "Enter a seed value or an empty line: ";
+    std::string seed_value;
+    getline(cin, seed_value);
+
+    if (seed_value == "") {
+        //if user didn't give seed value, we use
+        //computer time as seed value
+        rand_gen.seed( time(NULL));
+    }
+    else {
+        rand_gen.seed(stoi(seed_value));
+    }
+    std::uniform_int_distribution<int> distribution(lower, upper);
+
+    //std::string jatketaanko = "joo :)";
+    std::string vastaus;
+
+    while (true) {
+        int arvottu = distribution(rand_gen);
+        cout << endl << "Your drawn random number is " << arvottu << endl
+             << "Press enter to continue or q to quit: ";
+        getline(std::cin, vastaus);
+        if (vastaus == "q") {
+            break;
+        }
+
+    }
+
+
+
+
 }
 
 int main()
