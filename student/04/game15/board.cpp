@@ -15,6 +15,10 @@
 #include "board.hh"
 #include <iostream>
 #include <iomanip>
+#include <vector>
+#include <random>
+
+
 
 const int EMPTY = 16;
 const unsigned int PRINT_WIDTH = 5;
@@ -41,16 +45,43 @@ void Board::print()
     std::cout << std::string(PRINT_WIDTH * SIZE + 1, '-') << std::endl;
 }
 
-void Board::my_shuffle(std::vector<unsigned int> &numbers, int seed)
-{
-    std::default_random_engine randomEng(seed);
+void Board::make(std::string syotetty) {
+    std::vector<std::vector<unsigned int>> numbers
+        {{0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}};
+    int i = 0;
+    while (i < 16) {
+        numbers.at(i/4).at(i-(i/4)*i) = (unsigned int)syotetty.at(i);
+        ++i;
+    }
+
+    grid_ = numbers;
+}
+
+std::vector<std::vector<unsigned int>> Board::get_grid() {
+    return grid_;
+}
+
+// syötetään vektori (pituus 16),
+//joka sisältää (unsigned int numbersit, int seedin)
+
+void Board::my_shuffle(int seed_num) {
+    std::vector<unsigned int> numbers
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    std::default_random_engine randomEng(seed_num);
     std::uniform_int_distribution<int> distr(0, numbers.size() - 1);
     for(unsigned int i = 0; i < numbers.size(); ++i)
     {
-        unsigned int random_index = distr(randomEng);
-        unsigned int temp = numbers.at(i);
+        unsigned int random_index = distr(randomEng); //5
+        unsigned int temp = numbers.at(i); //1
         numbers.at(i) = numbers.at(random_index);
         numbers.at(random_index) = temp;
     }
+    std::vector<std::vector<unsigned int>> numbers2D;
+    for (unsigned int i = 0; i < numbers.size(); i++) {
+        int row = i / 4;
+        int col = i % 4;
+        numbers2D[row][col] = numbers[i];
+    }
+    grid_ = numbers2D;
 }
 

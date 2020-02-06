@@ -16,8 +16,12 @@
 #ifndef BOARD_HH
 #define BOARD_HH
 #include <vector>
+#include <iostream>
 
 const int SIZE = 4;
+
+//class Board;
+//using Game = std::vector<std::vector<Board>>;
 
 class Board
 {
@@ -27,16 +31,20 @@ public:
     // and two initialize methods
     // 2. Implement two constructors, one for each initialization way
 
+    void make(std::string);
+    std::vector<std::vector<unsigned int>> get_grid();
+
     // Prints the game grid
     void print();
 
     // More methods
 
-private:
     // Shuffles the numbers vector by using seed as a seed value
-    void my_shuffle(std::vector<unsigned int>& numbers, int seed);
+    void my_shuffle(int seed_num); // siirrä privateksi, jos ehtii
 
-    // Game grid for the 15 puzzle
+private:
+
+    // Game grid for the 15 puzzle | vektori grid_, jolle tallennetaan luvut
     std::vector<std::vector<unsigned int>> grid_;
 
     // More attributes/methods

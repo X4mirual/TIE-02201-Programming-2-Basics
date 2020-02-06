@@ -14,7 +14,7 @@ void produce_random_numbers(unsigned int lower, unsigned int upper)
     if (seed_value == "") {
         //if user didn't give seed value, we use
         //computer time as seed value
-        rand_gen.seed( time(NULL));
+        rand_gen.seed( time(NULL) );
     }
     else {
         rand_gen.seed(stoi(seed_value));

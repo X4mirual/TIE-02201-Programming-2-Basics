@@ -20,12 +20,53 @@
  * */
 
 #include "board.hh"
+#include <iostream>
+#include <string>
+#include <random>
 
-// More functions
+void initBoard() {
+
+    //Siirrä suuri osa privateksi board cpp:hen ja käsittele public-function
+    //kutsun kautta
+
+    //toteuta tarkastelu, jos syötetään muuta kuin 'y' tai 'n'
+    std::cout << "Random initialization (y/n): ";
+    std::string arvottukko; //voidaanko laittaa getlinen sisaan?
+    getline(std::cin, arvottukko);
+    Board kentta = Board();
+    if (arvottukko == "y") {
+        std::cout << "Enter a seed value (or an empty line): ";
+        std::string seed_num;
+        getline(std::cin, seed_num);
+        if (seed_num == "") {
+            int seed_num = rand() % 100;
+        }
+        kentta.my_shuffle(stoi(seed_num));
+    }
+    
+    else if (arvottukko == "n") {
+        std::cout << "Enter the numbers 1-16 in a "
+                     "desired order (16 means empty):" << std::endl;
+        std::string annettu_kentta;
+        getline(std::cin, annettu_kentta);
+        kentta.make(annettu_kentta);
+    }
+    
+}
 
 int main()
 {
-    // More functionality
+    initBoard();
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     return EXIT_SUCCESS;
 }
