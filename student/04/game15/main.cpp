@@ -36,12 +36,17 @@ void initBoard() {
     Board kentta = Board();
     if (arvottukko == "y") {
         std::cout << "Enter a seed value (or an empty line): ";
-        std::string seed_num;
-        getline(std::cin, seed_num);
-        if (seed_num == "") {
-            int seed_num = rand() % 100;
+        std::string s;
+        int seed_num;
+        getline(std::cin, s);
+        if (s == "") {
+            seed_num = rand() % 100;
         }
-        kentta.my_shuffle(stoi(seed_num));
+        else {
+            seed_num = stoi(s);
+        }
+        kentta.my_shuffle(seed_num);
+
     }
     
     else if (arvottukko == "n") {
@@ -51,7 +56,10 @@ void initBoard() {
         getline(std::cin, annettu_kentta);
         kentta.make(annettu_kentta);
     }
-    
+    else {
+        std::cout << "tee tähän virheviesti (koska ei y tai n)" << std::endl;
+    }
+    kentta.print();   
 }
 
 int main()

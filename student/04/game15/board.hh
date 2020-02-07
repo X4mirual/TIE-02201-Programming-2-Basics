@@ -42,10 +42,11 @@ public:
     // Shuffles the numbers vector by using seed as a seed value
     void my_shuffle(int seed_num); // siirrä privateksi, jos ehtii
 
-private:
-
     // Game grid for the 15 puzzle | vektori grid_, jolle tallennetaan luvut
     std::vector<std::vector<unsigned int>> grid_;
+
+private:
+
 
     // More attributes/methods
 };

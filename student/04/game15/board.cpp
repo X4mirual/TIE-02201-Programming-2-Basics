@@ -17,6 +17,7 @@
 #include <iomanip>
 #include <vector>
 #include <random>
+#include <sstream>
 
 
 
@@ -46,15 +47,22 @@ void Board::print()
 }
 
 void Board::make(std::string syotetty) {
-    std::vector<std::vector<unsigned int>> numbers
-        {{0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}};
-    int i = 0;
-    while (i < 16) {
-        numbers.at(i/4).at(i-(i/4)*i) = (unsigned int)syotetty.at(i);
-        ++i;
+    std::vector<unsigned int> numbers;
+    std::stringstream iss(syotetty);
+    int ii;
+    while (iss >> ii) {
+        numbers.push_back(ii);
     }
 
-    grid_ = numbers;
+    std::vector<std::vector<unsigned int>> numbers2D
+    {{0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}};
+// tee tästä oma funktionsa "make1Dto2Dvektor
+    for (unsigned int i = 0; i < numbers.size(); i++) {
+        int row = i / 4;
+        int col = i % 4;
+        numbers2D.at(row).at(col) = numbers[i];
+    }
+    grid_ = numbers2D;
 }
 
 std::vector<std::vector<unsigned int>> Board::get_grid() {
@@ -66,7 +74,7 @@ std::vector<std::vector<unsigned int>> Board::get_grid() {
 
 void Board::my_shuffle(int seed_num) {
     std::vector<unsigned int> numbers
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
     std::default_random_engine randomEng(seed_num);
     std::uniform_int_distribution<int> distr(0, numbers.size() - 1);
     for(unsigned int i = 0; i < numbers.size(); ++i)
@@ -76,11 +84,12 @@ void Board::my_shuffle(int seed_num) {
         numbers.at(i) = numbers.at(random_index);
         numbers.at(random_index) = temp;
     }
-    std::vector<std::vector<unsigned int>> numbers2D;
+    std::vector<std::vector<unsigned int>> numbers2D
+    {{0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}};
     for (unsigned int i = 0; i < numbers.size(); i++) {
         int row = i / 4;
         int col = i % 4;
-        numbers2D[row][col] = numbers[i];
+        numbers2D.at(row).at(col) = numbers[i];
     }
     grid_ = numbers2D;
 }
