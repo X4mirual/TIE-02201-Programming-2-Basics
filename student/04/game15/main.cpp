@@ -31,8 +31,14 @@ void initBoard(Board& kentta) {
     //Toteuta tarkastelu, jos syötetään muuta kuin 'y' tai 'n'
 
     std::cout << "Random initialization (y/n): ";
-    std::string arvottukko; //voidaanko laittaa getlinen sisaan?
+    std::string arvottukko;
     getline(std::cin, arvottukko);
+
+    while (arvottukko != "y" && arvottukko != "n") {
+        std::cout << "Unknown choice: " << arvottukko << std::endl;
+        std::cout << "Random initialization (y/n): ";
+        getline(std::cin, arvottukko);
+    }
 
     if (arvottukko == "y") {
         std::cout << "Enter a seed value (or an empty line): ";
@@ -47,26 +53,20 @@ void initBoard(Board& kentta) {
         }
         kentta.my_shuffle(seed_num);
     }
-    else if (arvottukko == "n") {
+    else {
         std::cout << "Enter the numbers 1-16 in a "
                      "desired order (16 means empty):" << std::endl;
         std::string annettu_kentta;
-        getline(std::cin, annettu_kentta);
+        while (annettu_kentta.size() != 38) {
+            getline(std::cin, annettu_kentta); // korjaa niin että luetaan suoraan vektoriin
+            // ja jos vektorin pituus väärä, odotetaan kunnes oikea (len()=16)
+        }
         kentta.make_board_to_order(annettu_kentta);
     }
-    else {
-        std::cout << "tee tähän virheviesti (koska ei y tai n)" << std::endl;
-    }
     kentta.print();
-
 }
 
-//void printBoard( const Board& board, std::ostream& stream )
-
-
-
 void pelataan(Board& kentta) {
-    //Sitten pelataan!
     while (true) { // ei vielä tarkastelua ratkaistavuudesta
         std::cout << "Dir (command, number): ";
         std::string komento;
@@ -74,24 +74,10 @@ void pelataan(Board& kentta) {
         kentta.move_tiles(komento);
         kentta.print();
     }
-
 }
 
 int main() {
     Board kentta = Board();
     initBoard(kentta);
     pelataan(kentta);
-    kentta.print();
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    return EXIT_SUCCESS;
 }

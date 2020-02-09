@@ -19,6 +19,7 @@
 #include <random>
 #include <sstream>
 #include <algorithm>
+#include <string>
 
 
 
@@ -49,16 +50,23 @@ void Board::print()
 
 void Board::make_board_to_order(std::string syotetty) {
     std::vector<unsigned int> numbers;
+    std::vector<unsigned int> req_numbers
+    {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
     std::stringstream iss(syotetty);
     int i;
     while (iss >> i) {
         numbers.push_back(i);
     }
+    for (int i = 0; i < req_numbers.size(); ++i) {
+        if (std::find(numbers.begin(), numbers.end(), req_numbers.at(i))
+                == numbers.end()) {
+            std::cout << "Number " << req_numbers.at(i)
+                      << " is missing" << std::endl;
+            exit(0);
+        }
+    }
     grid_ = make_1D_to_2D_vector(numbers);
-}
 
-std::vector<std::vector<unsigned int>> Board::get_grid() {
-    return grid_;
 }
 
 std::vector<std::vector<unsigned int>>
@@ -90,12 +98,13 @@ void Board::my_shuffle(int seed_num) {
 
 void Board::move_tiles(std::string komento) {
     char direction = komento.at(0);
-
-    int pituus = komento.length()-2;
-    int tile = std::stoi(komento.substr(2,pituus));
-    std::cout << tile << std::endl;
-    int x;
-    int y;
+    if (direction == 'q') {
+        exit(1);
+    }
+    int num_lkm = komento.length()-2; //numeroiden lukumäärä komennossa
+    int tile = std::stoi(komento.substr(2,num_lkm));
+    int x = -1;
+    int y = -1;
     for (int j = 0; j < grid_.size(); j++) {
         for (int i = 0; i < grid_.at(j).size(); i++) {
             if (grid_.at(j).at(i) == tile) {
@@ -105,48 +114,54 @@ void Board::move_tiles(std::string komento) {
             }
         }
     }
-    if (direction == 'w') {
-        grid_.at(y-1).at(x) = tile;
-        grid_.at(y).at(x) = 16;
+    int tyhja = 16;
+    std::string komennot = "wasd";
+    if (std::find(komennot.begin(), komennot.end(), direction) == komennot.end()) {
+        std::cout << "Unknown command: " << direction << std::endl;
     }
-    if (direction == 'a') {
-        grid_.at(y).at(x-1) = tile;
-        grid_.at(y).at(x) = 16;
+    else if (x == -1 && y == -1) {
+        std::cout << "Invalid number: " << tile << std::endl;
     }
-    if (direction == 's') {
-        grid_.at(y+1).at(x) = tile;
-        grid_.at(y).at(x) = 16;
+    else if (direction == 'w') {
+        if (grid_.at(y-1).at(x) == tyhja) {
+            grid_.at(y-1).at(x) = tile;
+            grid_.at(y).at(x) = tyhja;
+        }
+        else {
+            std::cout << "Impossible direction: " << direction
+                      << std::endl;
+        }
     }
-    if (direction == 'd') {
-        grid_.at(y).at(x+1) = tile;
-        grid_.at(y).at(x) = 16;
+    else if (direction == 'a') {
+        if (grid_.at(y).at(x-1) == tyhja) {
+            grid_.at(y).at(x-1) = tile;
+            grid_.at(y).at(x) = tyhja;
+        }
+        else {
+            std::cout << "Impossible direction: " << direction
+                      << std::endl;
+        }
     }
-    if (direction == 'q') {
-        std::cout << "komento oli q" << std::endl;
+    else if (direction == 's') {
+        if (grid_.at(y+1).at(x) == tyhja) {
+            grid_.at(y+1).at(x) = tile;
+            grid_.at(y).at(x) = tyhja;
+        }
+        else {
+            std::cout << "Impossible direction: " << direction
+                      << std::endl;
+        }
     }
-
-
+    else if (direction == 'd') {
+        if (grid_.at(y).at(x+1) == tyhja) {
+            grid_.at(y).at(x+1) = tile;
+            grid_.at(y).at(x) = tyhja;
+        }
+        else {
+            std::cout << "Impossible direction: " << direction
+                      << std::endl;
+        }
+    }
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
