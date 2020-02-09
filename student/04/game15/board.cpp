@@ -18,6 +18,7 @@
 #include <vector>
 #include <random>
 #include <sstream>
+#include <algorithm>
 
 
 
@@ -46,44 +47,22 @@ void Board::print()
     std::cout << std::string(PRINT_WIDTH * SIZE + 1, '-') << std::endl;
 }
 
-void Board::make(std::string syotetty) {
+void Board::make_board_to_order(std::string syotetty) {
     std::vector<unsigned int> numbers;
     std::stringstream iss(syotetty);
-    int ii;
-    while (iss >> ii) {
-        numbers.push_back(ii);
+    int i;
+    while (iss >> i) {
+        numbers.push_back(i);
     }
-
-    std::vector<std::vector<unsigned int>> numbers2D
-    {{0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}};
-// tee tästä oma funktionsa "make1Dto2Dvektor
-    for (unsigned int i = 0; i < numbers.size(); i++) {
-        int row = i / 4;
-        int col = i % 4;
-        numbers2D.at(row).at(col) = numbers[i];
-    }
-    grid_ = numbers2D;
+    grid_ = make_1D_to_2D_vector(numbers);
 }
 
 std::vector<std::vector<unsigned int>> Board::get_grid() {
     return grid_;
 }
 
-// syötetään vektori (pituus 16),
-//joka sisältää (unsigned int numbersit, int seedin)
-
-void Board::my_shuffle(int seed_num) {
-    std::vector<unsigned int> numbers
-        {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-    std::default_random_engine randomEng(seed_num);
-    std::uniform_int_distribution<int> distr(0, numbers.size() - 1);
-    for(unsigned int i = 0; i < numbers.size(); ++i)
-    {
-        unsigned int random_index = distr(randomEng); //5
-        unsigned int temp = numbers.at(i); //1
-        numbers.at(i) = numbers.at(random_index);
-        numbers.at(random_index) = temp;
-    }
+std::vector<std::vector<unsigned int>>
+Board::make_1D_to_2D_vector(std::vector<unsigned int> numbers) {
     std::vector<std::vector<unsigned int>> numbers2D
     {{0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}};
     for (unsigned int i = 0; i < numbers.size(); i++) {
@@ -91,6 +70,83 @@ void Board::my_shuffle(int seed_num) {
         int col = i % 4;
         numbers2D.at(row).at(col) = numbers[i];
     }
-    grid_ = numbers2D;
+    return numbers2D;
 }
+
+
+void Board::my_shuffle(int seed_num) {
+    std::vector<unsigned int> numbers
+        {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+    std::default_random_engine randomEng(seed_num);
+    std::uniform_int_distribution<int> distr(0, numbers.size() - 1);
+    for(unsigned int i = 0; i < numbers.size(); ++i) {
+        unsigned int random_index = distr(randomEng); //5
+        unsigned int temp = numbers.at(i); //1
+        numbers.at(i) = numbers.at(random_index);
+        numbers.at(random_index) = temp;
+    }
+    grid_ = make_1D_to_2D_vector(numbers);
+}
+
+void Board::move_tiles(std::string komento) {
+    char direction = komento.at(0);
+
+    int pituus = komento.length()-2;
+    int tile = std::stoi(komento.substr(2,pituus));
+    std::cout << tile << std::endl;
+    int x;
+    int y;
+    for (int j = 0; j < grid_.size(); j++) {
+        for (int i = 0; i < grid_.at(j).size(); i++) {
+            if (grid_.at(j).at(i) == tile) {
+                x = i;
+                y = j;
+                break;
+            }
+        }
+    }
+    if (direction == 'w') {
+        grid_.at(y-1).at(x) = tile;
+        grid_.at(y).at(x) = 16;
+    }
+    if (direction == 'a') {
+        grid_.at(y).at(x-1) = tile;
+        grid_.at(y).at(x) = 16;
+    }
+    if (direction == 's') {
+        grid_.at(y+1).at(x) = tile;
+        grid_.at(y).at(x) = 16;
+    }
+    if (direction == 'd') {
+        grid_.at(y).at(x+1) = tile;
+        grid_.at(y).at(x) = 16;
+    }
+    if (direction == 'q') {
+        std::cout << "komento oli q" << std::endl;
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

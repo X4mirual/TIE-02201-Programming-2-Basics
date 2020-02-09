@@ -24,16 +24,16 @@
 #include <string>
 #include <random>
 
-void initBoard() {
+void initBoard(Board& kentta) {
 
     //Siirrä suuri osa privateksi board cpp:hen ja käsittele public-function
-    //kutsun kautta
+    //kutsun kautta.
+    //Toteuta tarkastelu, jos syötetään muuta kuin 'y' tai 'n'
 
-    //toteuta tarkastelu, jos syötetään muuta kuin 'y' tai 'n'
     std::cout << "Random initialization (y/n): ";
     std::string arvottukko; //voidaanko laittaa getlinen sisaan?
     getline(std::cin, arvottukko);
-    Board kentta = Board();
+
     if (arvottukko == "y") {
         std::cout << "Enter a seed value (or an empty line): ";
         std::string s;
@@ -46,25 +46,42 @@ void initBoard() {
             seed_num = stoi(s);
         }
         kentta.my_shuffle(seed_num);
-
     }
-    
     else if (arvottukko == "n") {
         std::cout << "Enter the numbers 1-16 in a "
                      "desired order (16 means empty):" << std::endl;
         std::string annettu_kentta;
         getline(std::cin, annettu_kentta);
-        kentta.make(annettu_kentta);
+        kentta.make_board_to_order(annettu_kentta);
     }
     else {
         std::cout << "tee tähän virheviesti (koska ei y tai n)" << std::endl;
     }
-    kentta.print();   
+    kentta.print();
+
 }
 
-int main()
-{
-    initBoard();
+//void printBoard( const Board& board, std::ostream& stream )
+
+
+
+void pelataan(Board& kentta) {
+    //Sitten pelataan!
+    while (true) { // ei vielä tarkastelua ratkaistavuudesta
+        std::cout << "Dir (command, number): ";
+        std::string komento;
+        getline(std::cin, komento);
+        kentta.move_tiles(komento);
+        kentta.print();
+    }
+
+}
+
+int main() {
+    Board kentta = Board();
+    initBoard(kentta);
+    pelataan(kentta);
+    kentta.print();
     
     
     
