@@ -65,6 +65,7 @@ void Board::make_board_to_order(std::string syotetty) {
             exit(0);
         }
     }
+    check_solvability(numbers);
     grid_ = make_1D_to_2D_vector(numbers);
 
 }
@@ -88,12 +89,45 @@ void Board::my_shuffle(int seed_num) {
     std::default_random_engine randomEng(seed_num);
     std::uniform_int_distribution<int> distr(0, numbers.size() - 1);
     for(unsigned int i = 0; i < numbers.size(); ++i) {
-        unsigned int random_index = distr(randomEng); //5
-        unsigned int temp = numbers.at(i); //1
+        unsigned int random_index = distr(randomEng);
+        unsigned int temp = numbers.at(i);
         numbers.at(i) = numbers.at(random_index);
         numbers.at(random_index) = temp;
     }
+    check_solvability(numbers);
     grid_ = make_1D_to_2D_vector(numbers);
+}
+
+int Board::get_inv_count(std::vector<unsigned int> kiva) {
+    int inv_count = 0;
+    for (int i = 0; i < 16; ++i) {
+        for (int j = 0; j < 16 - i; ++j) {
+            if (kiva.at(i) > kiva.at(i+j) && kiva.at(i) != 16) {
+                ++inv_count;
+            }
+        }
+    }
+    return inv_count;
+}
+
+int Board::get_empty_row_num(std::vector<unsigned int> kiva) {
+    auto it = std::find(kiva.begin(), kiva.end(), 16);
+    int index = std::distance(kiva.begin(), it);
+    int row = index / 4;
+    return row;
+}
+
+void Board::check_solvability(std::vector<unsigned int> numbers) {
+    bool solvability;
+    int inversion_count = get_inv_count(numbers);
+    int empty_on_row = get_empty_row_num(numbers);
+    if (empty_on_row % 2 != inversion_count % 2) { //on ratkaistavissa, jatketaan hommia
+        std::cout << "Game is solvable: Go ahead!" << std::endl;
+    }
+    else { // ei ole ratkaistavissa, lopetetaan puuhastelu
+        std::cout << "Game is not solvable. What a pity." << std::endl;
+        exit(1);
+    }
 }
 
 void Board::move_tiles(std::string komento) {
@@ -162,6 +196,4 @@ void Board::move_tiles(std::string komento) {
                       << std::endl;
         }
     }
-
-
 }
