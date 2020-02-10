@@ -71,13 +71,13 @@ void Board::print() {
     std::cout << std::string(PRINT_WIDTH * SIZE + 1, '-') << std::endl;
 }
 
-void Board::move_tiles(std::string komento) {
-    char direction = komento.at(0);
-    if (direction == 'q') {
+void Board::move_tiles(std::vector<std::string> komento) {
+    std::string direction = komento.at(0);
+    if (direction == "q") {
         exit(0);
     }
-    int num_lkm = komento.length()-2; //numeroiden lukumäärä komennossa
-    unsigned int tile = std::stoi(komento.substr(2,num_lkm));
+    unsigned int tile = std::stoi(komento.at(1));
+    //alustetaan muuttuja x,y, annetaan niille mielivaltaiset arvot
     int x = -1;
     int y = -1;
     for (unsigned int j = 0; j < grid_.size(); j++) {
@@ -89,15 +89,15 @@ void Board::move_tiles(std::string komento) {
             }
         }
     }
-
-    std::string komennot = "wasd";
-    if (std::find(komennot.begin(), komennot.end(), direction) == komennot.end()) {
+    std::vector<std::string> possible_commands {"w","a","s","d"};
+    if (std::find(possible_commands.begin(), possible_commands.end(),
+                  direction) == possible_commands.end()) {
         std::cout << "Unknown command: " << direction << std::endl;
     }
     else if (x == -1 && y == -1) {
         std::cout << "Invalid number: " << tile << std::endl;
     }
-    else if (direction == 'w') {
+    else if (direction == "w") {
         if (grid_.at(y-1).at(x) == EMPTY) {
             grid_.at(y-1).at(x) = tile;
             grid_.at(y).at(x) = EMPTY;
@@ -107,7 +107,7 @@ void Board::move_tiles(std::string komento) {
                       << std::endl;
         }
     }
-    else if (direction == 'a') {
+    else if (direction == "a") {
         if (grid_.at(y).at(x-1) == EMPTY) {
             grid_.at(y).at(x-1) = tile;
             grid_.at(y).at(x) = EMPTY;
@@ -117,7 +117,7 @@ void Board::move_tiles(std::string komento) {
                       << std::endl;
         }
     }
-    else if (direction == 's') {
+    else if (direction == "s") {
         if (grid_.at(y+1).at(x) == EMPTY) {
             grid_.at(y+1).at(x) = tile;
             grid_.at(y).at(x) = EMPTY;
@@ -127,14 +127,14 @@ void Board::move_tiles(std::string komento) {
                       << std::endl;
         }
     }
-    else if (direction == 'd') {
+    else if (direction == "d") {
         if (grid_.at(y).at(x+1) == EMPTY) {
             grid_.at(y).at(x+1) = tile;
             grid_.at(y).at(x) = EMPTY;
         }
-        else {
-            std::cout << "Impossible direction: " << direction
-                      << std::endl;
+    else {
+        std::cout << "Impossible direction: " << direction
+                  << std::endl;
         }
     }
 }

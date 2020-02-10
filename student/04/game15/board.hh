@@ -34,8 +34,10 @@ public:
     // Tulostaa pelikentän
     void print();
 
-    // Siirtää pelikentän lukuja käyttäjän antaman komennon mukaan
-    void move_tiles(std::string komento);
+    // Siirtää pelikentän lukuja käyttäjän antaman komennon mukaan.
+    // Komentovektorissa erikseen annettu komento (suunta) ja
+    // liikutettava luku
+    void move_tiles(std::vector<std::string> komento);
 
     // Tarkistaa onko peli voitettu, ja päättää ohjelman, jos on
     void check_if_won();

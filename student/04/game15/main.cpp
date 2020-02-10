@@ -30,14 +30,14 @@
 
 // Tekee merkkijonosta 1d vektorin<unsigned int>,
 // jossa jokainen luku on oma alkionsa
-std::vector<unsigned int> line_to_vector(std::string line) {
+std::vector<unsigned int> int_line_to_vector(std::string line) {
     std::vector<unsigned int> kentta_1d;
     size_t pos = 0;
     unsigned int segment;
     char separator = ' ';
     while ((pos = line.find(separator)) != std::string::npos) {
         if (pos!= 0) {
-            segment = std::stoi(line.substr(0, pos));
+            unsigned int segment = std::stoi(line.substr(0, pos));
             kentta_1d.push_back(segment);
             line.erase(0, pos + 1);
         }
@@ -46,9 +46,29 @@ std::vector<unsigned int> line_to_vector(std::string line) {
         }
     }
     // Viimeinen alkio lisättävä vielä vektoriin
-    int last_line = stoi(line);
-    kentta_1d.push_back(last_line);
+    kentta_1d.push_back(stoi(line));
+    return kentta_1d;
+}
 
+// C++ vaatii funktiolta tietynlaisen paluuarvon, joten eri funktiota
+// merkkijonoista ja luvuista koostuville vektoreille
+std::vector<std::string> string_line_to_vector(std::string line) {
+    std::vector<std::string> kentta_1d;
+    size_t pos = 0;
+    std::string segment;
+    char separator = ' ';
+    while ((pos = line.find(separator)) != std::string::npos) {
+        if (pos!= 0) {
+            segment = line.substr(0, pos);
+            kentta_1d.push_back(segment);
+            line.erase(0, pos + 1);
+        }
+        else {
+            line.erase(0,1);
+        }
+    }
+    // Viimeinen alkio lisättävä vielä vektoriin
+    kentta_1d.push_back(line);
     return kentta_1d;
 }
 
@@ -83,10 +103,11 @@ void init_board(Board& kentta) {
                      "desired order (16 means empty):" << std::endl;
         std::string line;
         std::vector<unsigned int> kentta_1d;
+        bool is_int = true;
         // Käyttäjän on pakko antaa 16kpl lukuja
         while (kentta_1d.size() != 16) {
             getline(std::cin, line);
-            kentta_1d = line_to_vector(line);
+            kentta_1d = int_line_to_vector(line);
         }
         kentta.make_board_to_order(kentta_1d);
     }
@@ -100,7 +121,10 @@ void play(Board& kentta) {
         std::cout << "Dir (command, number): ";
         std::string komento;
         getline(std::cin, komento);
-        kentta.move_tiles(komento);
+        bool is_int = false;
+        std::vector<std::string> komento_vector =
+                string_line_to_vector(komento);
+        kentta.move_tiles(komento_vector);
         kentta.check_if_won();
         kentta.print();
     }
