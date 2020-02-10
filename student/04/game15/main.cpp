@@ -16,9 +16,9 @@
  * E-Mail: lauri.hiltune@tuni.fi
  *
  * Notes about the program and it's implementation:
- * Space ' ' used as separator when entering commands. Do not give
- * unnecessary spaces, tabs or enter-inputs when giving commands
- * for the program.
+ * Space ' ' used as separator when entering commands. When giving
+ * direction commands to move tiles, always give a number after the
+ * command character.
  *
  * */
 
@@ -37,7 +37,7 @@ std::vector<unsigned int> int_line_to_vector(std::string line) {
     char separator = ' ';
     while ((pos = line.find(separator)) != std::string::npos) {
         if (pos!= 0) {
-            unsigned int segment = std::stoi(line.substr(0, pos));
+            segment = std::stoi(line.substr(0, pos));
             kentta_1d.push_back(segment);
             line.erase(0, pos + 1);
         }
@@ -103,7 +103,6 @@ void init_board(Board& kentta) {
                      "desired order (16 means empty):" << std::endl;
         std::string line;
         std::vector<unsigned int> kentta_1d;
-        bool is_int = true;
         // Käyttäjän on pakko antaa 16kpl lukuja
         while (kentta_1d.size() != 16) {
             getline(std::cin, line);
@@ -121,7 +120,6 @@ void play(Board& kentta) {
         std::cout << "Dir (command, number): ";
         std::string komento;
         getline(std::cin, komento);
-        bool is_int = false;
         std::vector<std::string> komento_vector =
                 string_line_to_vector(komento);
         kentta.move_tiles(komento_vector);
