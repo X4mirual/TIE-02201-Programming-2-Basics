@@ -123,8 +123,8 @@ void play(Board& kentta) {
         std::vector<std::string> komento_vector =
                 string_line_to_vector(komento);
         kentta.move_tiles(komento_vector);
-        kentta.check_if_won();
         kentta.print();
+        kentta.check_if_won();
     }
 }
 
