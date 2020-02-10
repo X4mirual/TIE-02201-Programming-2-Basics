@@ -47,7 +47,7 @@ void Board::make_board_to_order(std::vector<unsigned int> numbers) {
                 == numbers.end()) {
             std::cout << "Number " << req_numbers.at(i)
                       << " is missing" << std::endl;
-            exit(0);
+            exit(1);
         }
     }
     check_solvability(numbers);
@@ -74,7 +74,7 @@ void Board::print() {
 void Board::move_tiles(std::string komento) {
     char direction = komento.at(0);
     if (direction == 'q') {
-        exit(1);
+        exit(0);
     }
     int num_lkm = komento.length()-2; //numeroiden lukumäärä komennossa
     unsigned int tile = std::stoi(komento.substr(2,num_lkm));
@@ -143,7 +143,7 @@ void Board::check_if_won() {
     std::vector<unsigned int> one_d_grid = get_1D_grid_();
     if (std::is_sorted(one_d_grid.begin(), one_d_grid.end())) {
         std::cout << "You won!" << std::endl;
-        exit(1);
+        exit(0);
     }
 }
 
@@ -177,7 +177,7 @@ void Board::check_solvability(std::vector<unsigned int> numbers) {
     }
     else { // ei ole ratkaistavissa, lopetetaan puuhastelu
         std::cout << "Game is not solvable. What a pity." << std::endl;
-        exit(1);
+        exit(0);
     }
 }
 
