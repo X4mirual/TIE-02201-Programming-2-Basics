@@ -82,6 +82,15 @@ Board::make_1D_to_2D_vector(std::vector<unsigned int> numbers) {
     return numbers2D;
 }
 
+std::vector<unsigned int> Board::get_1D_grid_() {
+    std::vector<unsigned int> numbers_1D;
+    for(int i = 0; i < grid_.size(); ++i) {
+        for(int j = 0; j < grid_.at(i).size(); ++j) {
+            numbers_1D.push_back(grid_.at(i).at(j));
+        }
+    }
+    return numbers_1D;
+}
 
 void Board::my_shuffle(int seed_num) {
     std::vector<unsigned int> numbers
@@ -197,3 +206,12 @@ void Board::move_tiles(std::string komento) {
         }
     }
 }
+
+void Board::check_if_won() {
+    std::vector<unsigned int> one_d_grid = get_1D_grid_();
+    if (std::is_sorted(one_d_grid.begin(), one_d_grid.end())) {
+        std::cout << "You won!" << std::endl;
+        exit(1);
+    }
+}
+

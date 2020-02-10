@@ -66,12 +66,13 @@ void initBoard(Board& kentta) {
     kentta.print();
 }
 
-void pelataan(Board& kentta) {
+void play(Board& kentta) {
     while (true) { // ei vielä tarkastelua ratkaistavuudesta
         std::cout << "Dir (command, number): ";
         std::string komento;
         getline(std::cin, komento);
         kentta.move_tiles(komento);
+        kentta.check_if_won();
         kentta.print();
     }
 }
@@ -79,5 +80,5 @@ void pelataan(Board& kentta) {
 int main() {
     Board kentta = Board();
     initBoard(kentta);
-    pelataan(kentta);
+    play(kentta);
 }

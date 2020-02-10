@@ -50,6 +50,12 @@ public:
     std::vector<std::vector<unsigned int>>
     make_1D_to_2D_vector(std::vector<unsigned int> numbers);
 
+    // oujeeee
+    std::vector<unsigned int> get_1D_grid_();
+
+    // töttörööööö
+    void check_if_won();
+
 
 private:
 
