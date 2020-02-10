@@ -1,10 +1,10 @@
-/* Game15 (or puzzle 15) : Template code
+/* Game15 (or puzzle 15)
  *
  * Desc:
- *  This program generates a 15 puzzle. The board is SIZE x SIZE,
- * (original was 4x4) and every round the player chooses a direction and
+ * This program generates a 15 puzzle. The board is 4 x 4,
+ * and every round the player chooses a direction and
  * a number tile, making the given tile to be moved to the given direction.
- *  Game will end when the numbers 1-15 (1-16) are in the ascending order,
+ * Game will end when the numbers 1-15 (1-16) are in the ascending order,
  * starting from top left and proceeding row by row.
  * Empty space is represented by the number 16 in the code (constant EMPTY)
  * and by dot when printing the game board.
@@ -16,6 +16,9 @@
  * E-Mail: lauri.hiltune@tuni.fi
  *
  * Notes about the program and it's implementation:
+ * Space ' ' used as separator when entering commands. Do not give
+ * unnecessary spaces, tabs or enter-inputs when giving commands
+ * for the program.
  *
  * */
 
@@ -24,12 +27,33 @@
 #include <string>
 #include <random>
 
-void initBoard(Board& kentta) {
 
-    //Siirrä suuri osa privateksi board cpp:hen ja käsittele public-function
-    //kutsun kautta.
-    //Toteuta tarkastelu, jos syötetään muuta kuin 'y' tai 'n'
+// Tekee merkkijonosta 1d vektorin<unsigned int>,
+// jossa jokainen luku on oma alkionsa
+std::vector<unsigned int> line_to_vector(std::string line) {
+    std::vector<unsigned int> kentta_1d;
+    size_t pos = 0;
+    unsigned int segment;
+    char separator = ' ';
+    while ((pos = line.find(separator)) != std::string::npos) {
+        if (pos!= 0) {
+            segment = std::stoi(line.substr(0, pos));
+            kentta_1d.push_back(segment);
+            line.erase(0, pos + 1);
+        }
+        else {
+            line.erase(0,1);
+        }
+    }
+    // Viimeinen alkio lisättävä vielä vektoriin
+    int last_line = stoi(line);
+    kentta_1d.push_back(last_line);
 
+    return kentta_1d;
+}
+
+// Alustaa koko pelin ja alustaa pelikentän
+void init_board(Board& kentta) {
     std::cout << "Random initialization (y/n): ";
     std::string arvottukko;
     getline(std::cin, arvottukko);
@@ -45,29 +69,34 @@ void initBoard(Board& kentta) {
         std::string s;
         int seed_num;
         getline(std::cin, s);
-        if (s == "") {
-            seed_num = rand() % 100;
+        if (s == "") { // jos käyttäjä ei syötä siemenlukua
+            seed_num = time(NULL);
         }
         else {
             seed_num = stoi(s);
         }
-        kentta.my_shuffle(seed_num);
+        kentta.make_board_by_shuffle(seed_num);
     }
+
     else {
         std::cout << "Enter the numbers 1-16 in a "
                      "desired order (16 means empty):" << std::endl;
-        std::string annettu_kentta;
-        while (annettu_kentta.size() != 38) {
-            getline(std::cin, annettu_kentta); // korjaa niin että luetaan suoraan vektoriin
-            // ja jos vektorin pituus väärä, odotetaan kunnes oikea (len()=16)
+        std::string line;
+        std::vector<unsigned int> kentta_1d;
+        // Käyttäjän on pakko antaa 16kpl lukuja
+        while (kentta_1d.size() != 16) {
+            getline(std::cin, line);
+            kentta_1d = line_to_vector(line);
         }
-        kentta.make_board_to_order(annettu_kentta);
+        kentta.make_board_to_order(kentta_1d);
     }
     kentta.print();
+    kentta.check_if_won();
 }
 
+// Pyörittää peliä, kunnes se tulee päätetyksi jossain funktiossa
 void play(Board& kentta) {
-    while (true) { // ei vielä tarkastelua ratkaistavuudesta
+    while (true) {
         std::cout << "Dir (command, number): ";
         std::string komento;
         getline(std::cin, komento);
@@ -79,6 +108,7 @@ void play(Board& kentta) {
 
 int main() {
     Board kentta = Board();
-    initBoard(kentta);
+    init_board(kentta);
     play(kentta);
+    // Ohjelman suoritus päätetään funktiossa, jossa se päättyy
 }
