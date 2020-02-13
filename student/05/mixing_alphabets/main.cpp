@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <random>
 
+using namespace std;
+
 int main()
 {
     // This is a random number generator that should be given as parameter to the
@@ -19,7 +21,14 @@ int main()
             return EXIT_SUCCESS;
         }
 
-        // TODO: implement your solution here
+        string::iterator toiseksi_ensimmainen = word.begin();
+        string::iterator toiseksi_viimeinen = word.end();
+        if(word.length() > 2) {
+            ++toiseksi_ensimmainen;
+            --toiseksi_viimeinen;
+            shuffle(toiseksi_ensimmainen, toiseksi_viimeinen,
+                    generator);
+        }
 	
         std::cout << word << std::endl;
     }
