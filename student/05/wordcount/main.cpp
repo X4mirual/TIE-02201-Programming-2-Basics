@@ -59,7 +59,7 @@ int main()
     while(iter != mappi.end()) {
         cout << iter->first << " "
              << iter->second.size() << ": ";
-        int u = 0;
+        unsigned int u = 0;
         while(u < iter->second.size()) {
             cout << iter->second.at(u);
             if(u+1 < iter->second.size()) {
