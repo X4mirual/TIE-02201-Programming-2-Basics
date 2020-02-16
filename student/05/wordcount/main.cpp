@@ -37,7 +37,8 @@ int main()
             if(mappi.find(sana) == mappi.end()) {
                 mappi.insert({sana, {rivi_nro}});
             }
-            else {
+            else if(find(mappi.at(sana).begin(), mappi.at(sana).end(),
+                         rivi_nro) == mappi.at(sana).end()) {
                 mappi.at(sana).push_back(rivi_nro);
             }
         }
