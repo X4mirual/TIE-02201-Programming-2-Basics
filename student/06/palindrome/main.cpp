@@ -20,12 +20,12 @@ bool palindrome_recursive(std::string s)
   }
     if(s.at(0) == s.at(length - 1)) {
         s = s.substr(1, length - 2);
-        palindrome_recursive(s);
+        return palindrome_recursive(s);
     }
     else {
         return false;
     }
-    return true;
+
 
 
 
