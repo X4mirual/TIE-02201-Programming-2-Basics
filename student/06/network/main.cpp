@@ -7,6 +7,8 @@
 const std::string HELP_TEXT = "S = store id1 i2\nP = print id\n"
                               "C = count id\nD = depth id\n";
 
+unsigned int pisin;
+
 using namespace std;
 
 std::vector<std::string> split(const std::string& s, const char delimiter, bool ignore_empty = false){
@@ -57,6 +59,25 @@ unsigned int kerro_verkoston_suuruus(vector<pair<string, string>> vektori, strin
             verkoston_koko += kerro_verkoston_suuruus(vektori, it->second);
         }
     }
+    return verkoston_koko;
+}
+
+unsigned int paivita_verkoston_syvyys(vector<pair<string, string>> vektori, string henkilo) {
+    vector<pair<string, string>>::iterator it;
+    unsigned int verkoston_koko = 1;
+    for(it = vektori.begin(); it != vektori.end(); ++it) {
+        if(it->first == henkilo) {
+            henkilo = it->second;
+            verkoston_koko += paivita_verkoston_syvyys(vektori, henkilo);
+        }
+    }
+    if (verkoston_koko > pisin) {
+        pisin = verkoston_koko;
+    }
+    else {
+        verkoston_koko = 0;
+    }
+
     return verkoston_koko;
 }
 
@@ -117,6 +138,9 @@ int main()
             std::string id = parts.at(1);
 
             // TODO: Implement the command here!
+            pisin = 0;
+            paivita_verkoston_syvyys(vektori, id);
+            cout << pisin << endl;
 
         } else if(command == "Q" or command == "q"){
            return EXIT_SUCCESS;
