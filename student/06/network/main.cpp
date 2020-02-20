@@ -117,6 +117,7 @@ int main()
             std::string id = parts.at(1);
 
             // TODO: Implement the command here!
+            cout << id << endl;
             string pisteet = "";
             p_rekrytyt(vektori, id, pisteet);
 
