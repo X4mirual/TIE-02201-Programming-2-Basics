@@ -57,10 +57,37 @@ bool lue_tiedosto() {
         //korjaa??
     }
     string row;
-    string splitted;
-    while(getline(tiedosto_olio,row)) {
-        splitted = split(row, ';');
-        Product tuote = {splitted.at(2), splitted.at(3)};
+    std::vector<std::string> splitted_row; //rivi splitattuna haluttuihin osiin
+    string chain;
+    string location;
+    string product;
+    map<string, vector<Product>> temp;
+    double price;
+    string price_information;
+    while(getline(tiedosto_olio,row)) { //read file until all lines read
+        splitted_row = split(row, ';');
+        chain = splitted_row.at(0);
+        cout << "kissa" << endl;
+        location = splitted_row.at(1);
+        product = splitted_row.at(2);
+        price_information = (splitted_row.at(3));
+        if(price_information == "out-of-stock") {
+            price = -1;
+        }
+        if(chains.find(chain) == chains.end()){ //chain not found
+            temp = {{location, {{product, price}}}};
+            chains.insert(make_pair(chain, temp));
+        }
+        else{ //chain found
+            if(chains.at(chain).find(location) == chains.at(chain).end()){ //chain not found, location not found
+                chains.at(chain).insert({{location, {{product, price}}}});
+            }
+            else { //chain found, location found
+                chains.at(chain).at(location).push_back({product, price});
+            }
+            //todo: what if the product itself (within chain and location) is already found?
+        }
+
 
     }
 
