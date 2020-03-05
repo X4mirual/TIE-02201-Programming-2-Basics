@@ -96,14 +96,29 @@ int main()
 {
     lue_tiedosto();
     string command;
+    vector<string> command_parts;
     while(command != "quit") {
         cout << "> ";
         getline(cin, command);
-
-        if(command == "chains") {
+        command_parts = split(command, ' ');
+        if(command_parts.at(0) == "chains") {
             for(map<string, map<string, vector<Product>>>::iterator it = chains.begin(); it != chains.end(); ++it) {
                 cout << it->first << endl;
             }
+        }
+        else if(command_parts.at(0) == "stores") {
+            string store = command_parts.at(1);
+            if(chains.find(store) == chains.end()) {
+                cout << "Error: unknown chain name" << endl;
+            }
+            else {
+                for(auto it = chains.at(store).begin(); it != chains.at(store).cend(); ++it) {
+                    cout << it->first << endl;
+                }
+            }
+        }
+        else {
+            cout << "Error: unknown command: " << command_parts.at(0) << endl;
         }
 
     }
