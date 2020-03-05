@@ -67,11 +67,10 @@ bool lue_tiedosto() {
     while(getline(tiedosto_olio,row)) { //read file until all lines read
         splitted_row = split(row, ';');
         chain = splitted_row.at(0);
-        cout << "kissa" << endl;
         location = splitted_row.at(1);
         product = splitted_row.at(2);
         price_information = (splitted_row.at(3));
-        if(price_information == "out-of-stock") {
+        if(price_information == "out-of-stock") { // omaan funktioonsa tietorakenteeseen tallentaminen
             price = -1;
         }
         if(chains.find(chain) == chains.end()){ //chain not found
@@ -96,9 +95,20 @@ bool lue_tiedosto() {
 int main()
 {
     lue_tiedosto();
-    while (true) {
+    string command;
+    while(command != "quit") {
+        cout << "> ";
+        getline(cin, command);
+
+        if(command == "chains") {
+            for(map<string, map<string, vector<Product>>>::iterator it = chains.begin(); it != chains.end(); ++it) {
+                cout << it->first << endl;
+            }
+        }
 
     }
+
+    return 0;
 }
 
 
