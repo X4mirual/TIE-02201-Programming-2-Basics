@@ -1,3 +1,25 @@
+/* Kauppaketjut
+ *
+ * Kuvaus:
+ * Ohjelma lukee tiedostosta kauppaketju-, (liikkeen) nimi-, tuote- ja
+ * hintatiedot. Ohjelma kertoo tämän jälkeen sille annettujen komentojen
+ * mukaan tiedoista.
+ *
+ * Program author
+ * Name: Lauri Hiltunen
+ * Student number: 274422
+ * UserID: hiltunen
+ * E-Mail: lauri.hiltune@tuni.fi
+ *
+ * Huomioitavaa ohjelmassa ja sen toteutuksessa:
+ * Tiedot tiedostossa oltava muodossa
+ * "kauppaketju;nimi;tuote;hinta" ja jokaisen tietoalkion oltava omalla
+ * rivillään. Antaessa moniosaisia komentoja (kuten kysyessä ketjuun kuuluvia
+ * liikkeitä) toimii erottimena välilyönti ' '.
+ *
+ * */
+
+
 #include <iostream>
 #include <vector>
 #include <map>
@@ -11,7 +33,6 @@
 
 using namespace std;
 
-
 struct Product{
     string product_name;
     double price;
@@ -20,7 +41,7 @@ map<string, map<string, vector<Product>>> chains;
 map<string, vector<Product>> location;
 vector<Product> products;
 
-//Näin halutaan tulostaa
+//Näin halutaan tulostuksen toimivan
 //cout << chains.at("S-Market").at("Hervantakeskus").at(2).product_name << endl;
 
 
@@ -70,26 +91,35 @@ bool lue_tiedosto() {
         location = splitted_row.at(1);
         product = splitted_row.at(2);
         price_information = (splitted_row.at(3));
-        if(price_information == "out-of-stock") { // omaan funktioonsa tietorakenteeseen tallentaminen
-            price = -1;
+        if(price_information == "out-of-stock") { //omaan funktioonsa tietorakenteeseen tallentaminen
+            price = -1.00;
         }
-        if(chains.find(chain) == chains.end()){ //chain not found
+        if(chains.find(chain) == chains.end()) { //chain not found
             temp = {{location, {{product, price}}}};
             chains.insert(make_pair(chain, temp));
         }
         else{ //chain found
-            if(chains.at(chain).find(location) == chains.at(chain).end()){ //chain not found, location not found
+            if(chains.at(chain).find(location) == chains.at(chain).end()) { //chain not found, location not found
                 chains.at(chain).insert({{location, {{product, price}}}});
             }
             else { //chain found, location found
-                chains.at(chain).at(location).push_back({product, price});
+                int i = 0;
+                    for(vector<Product>::iterator it = chains.at(chain).at(location).begin();
+                    it != chains.at(chain).at(location).end(); ++it) {
+                        if(it->product_name == product) { //chain found, location found, product found
+                            it->price = price;
+                            i = 1;
+                        }
+                    }
+                if(i == 0) { // chain found, location found, product not found
+                    chains.at(chain).at(location).push_back({product, price});
+                }
+                else {
+                    i = 0;
+                }
             }
-            //todo: what if the product itself (within chain and location) is already found?
         }
-
-
     }
-
 }
 
 int main()
@@ -117,10 +147,9 @@ int main()
                 }
             }
         }
-        else {
+        else if(command_parts.at(0) != "quit") {
             cout << "Error: unknown command: " << command_parts.at(0) << endl;
         }
-
     }
 
     return 0;
