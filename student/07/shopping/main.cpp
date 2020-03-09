@@ -78,7 +78,6 @@ bool lue_tiedosto() {
         cout << "Error! The file " << file_name
              << " cannot be opened." << endl;
         return false;
-        //korjaa??
     }
     string row;
     std::vector<std::string> splitted_row; //rivi splitattuna haluttuihin osiin
@@ -132,6 +131,7 @@ bool lue_tiedosto() {
             product_names.push_back(product);
         }
     }
+    return true;
 }
 
 void print_cheapest_places(string product) {
@@ -184,8 +184,41 @@ bool pro_compare(Product a, Product b) {
     return a.product_name < b.product_name;
 }
 
+void print_selection(string chain, string location) {
+    if(chains.find(chain) == chains.end()) {
+        cout << "Error: unknown chain name" << endl;
+    }
+    else if(chains.at(chain).find(location) == chains.at(chain).end()) {
+        cout << "Error: unknown store" << endl;
+    }
+    else {
+        sort(chains.at(chain).at(location).begin(), chains.at(chain).at(location).end(), pro_compare);
+        for(vector<Product>::iterator it = chains.at(chain).at(location).begin();
+        it != chains.at(chain).at(location).end(); ++it) {
+            if(it->price != numeric_limits<int>::max()) {
+                cout << it->product_name << " " << it->price << endl;
+            }
+            else {
+                cout << it->product_name << " " << "out of stock" << endl;
+            }
+        }
+    }
+}
+
+bool is_command_length(vector<string> command_parts, int right_num) {
+    if(command_parts.size() != right_num) {
+        cout << "Error: error in command " << command_parts.at(0) << endl;
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 int main() {
-    lue_tiedosto();
+    if(lue_tiedosto() == false) {
+        return EXIT_FAILURE;
+    }
     //Asetetaan tarkkuus kaikille lukujen tulostuksille
     cout << std::fixed << setprecision(2);
 
@@ -197,65 +230,51 @@ int main() {
         getline(cin, command);
         command_parts = split(command, ' ');
         if(command_parts.at(0) == "chains") {
-            for(map<string, map<string, vector<Product>>>::iterator it = chains.begin(); it != chains.end(); ++it) {
-                cout << it->first << endl;
-            }
-        }
-        else if(command_parts.at(0) == "stores") {
-            string location = command_parts.at(1);
-            if(chains.find(location) == chains.end()) {
-                cout << "Error: unknown chain name" << endl;
-            }
-            else {
-                for(auto it = chains.at(location).begin(); it != chains.at(location).cend(); ++it) {
+            if(is_command_length(command_parts, 1) == true) {
+                for(map<string, map<string, vector<Product>>>::iterator it = chains.begin(); it != chains.end(); ++it) {
                     cout << it->first << endl;
                 }
             }
         }
-        else if(command_parts.at(0) == "selection") {
-            if(command_parts.size() != 3) {
-                cout << "Error: error in command " << command_parts.at(0) << endl;
-            }
-            else {
-                string chain = command_parts.at(1);
-                string location = command_parts.at(2);
-                if(chains.find(chain) == chains.end()) {
+        else if(command_parts.at(0) == "stores") {
+            if(is_command_length(command_parts, 2) == true) {
+                string location = command_parts.at(1);
+                if(chains.find(location) == chains.end()) {
                     cout << "Error: unknown chain name" << endl;
                 }
-                else if(chains.at(chain).find(location) == chains.at(chain).end()) {
-                    cout << "Error: unknown store" << endl;
-                }
                 else {
-                    sort(chains.at(chain).at(location).begin(), chains.at(chain).at(location).end(), pro_compare);
-                    for(vector<Product>::iterator it = chains.at(chain).at(location).begin();
-                    it != chains.at(chain).at(location).end(); ++it) {
-                        if(it->price != numeric_limits<int>::max()) {
-                            cout << it->product_name << " " << it->price << endl;
-                        }
-                        else {
-                            cout << it->product_name << " " << "out of stock" << endl;
-                        }
+                    for(auto it = chains.at(location).begin(); it != chains.at(location).end(); ++it) {
+                        cout << it->first << endl;
                     }
                 }
             }
         }
-
+        else if(command_parts.at(0) == "selection") {
+            if(is_command_length(command_parts, 3) == true) {
+                print_selection(command_parts.at(1), command_parts.at(2));
+            }
+        }
         else if(command_parts.at(0) == "cheapest") {
-            string product = command_parts.at(1);
-            print_cheapest_places(product);
-
+            if(is_command_length(command_parts, 2) == true) {
+                string product = command_parts.at(1);
+                print_cheapest_places(product); //tarkista toimivuus
+            }
         }
         else if(command == "products") {
-            for(string product_name : product_names) {
-                cout << product_name << endl;
+            if(is_command_length(command_parts, 2) == true) {
+                for(string product_name : product_names) {
+                    cout << product_name << endl;
+                }
             }
         }
         else if(command != "quit") {
-            cout << "Error: unknown command: " << command_parts.at(0) << endl;
+            if(is_command_length(command_parts, 2) == true) {
+                cout << "Error: unknown command: " << command_parts.at(0) << endl;
+            }
         }
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 
