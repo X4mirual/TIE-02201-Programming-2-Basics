@@ -39,16 +39,16 @@ struct Product{
     string product_name;
     double price;
 };
+
+//Tietorakenne, johon kauppaketju, kaupan sijainti ja kaupan tuotteet ja
+//niiden hinnat tallennetaan
 map<string, map<string, vector<Product>>> chains;
-map<string, vector<Product>> location;
-vector<Product> products;
 vector<string> product_names;
 
-//Näin halutaan tulostuksen toimivan
-//cout << chains.at("S-Market").at("Hervantakeskus").at(2).product_name << endl;
-
-
-std::vector<std::string> split(const std::string& s, const char delimiter, bool ignore_empty = false){
+//Jakaa merkkijono osiin
+//Parametrit: jaettava merkkijono, osien välinen erotin
+//Paluuarvo: merkkijono jaettuna osiin
+std::vector<std::string> split(const std::string& s, const char delimiter){
     std::vector<std::string> result;
     std::string tmp = s;
 
@@ -56,19 +56,60 @@ std::vector<std::string> split(const std::string& s, const char delimiter, bool 
     {
         std::string new_part = tmp.substr(0, tmp.find(delimiter));
         tmp = tmp.substr(tmp.find(delimiter)+1, tmp.size());
-        if(not (ignore_empty and new_part.empty()))
+        if(not(new_part.empty()))
         {
             result.push_back(new_part);
         }
     }
-    if(not (ignore_empty and tmp.empty()))
-    {
-        result.push_back(tmp);
-    }
+    result.push_back(tmp);
     return result;
 }
 
-bool lue_tiedosto() {
+//Lisää tuotteen, tarvittaessa kauppaketjun lokaation ja tarvittaessa
+//kauppaketjun tietorakenteeseen
+//Parametrit:
+//Paluuarvo:
+void add_to_data_structure(string chain, string location, string product, string price_information) {
+    double price;
+    map<string, vector<Product>> temp;
+    if(price_information == "out-of-stock") {
+        price = numeric_limits<int>::max();
+    }
+    else {
+        price = stod(price_information);
+    }
+    if(chains.find(chain) == chains.end()) { //chain not found
+        temp = {{location, {{product, price}}}};
+        chains.insert(make_pair(chain, temp));
+    }
+    else{ //chain found
+        if(chains.at(chain).find(location) == chains.at(chain).end()) { //chain not found, location not found
+            chains.at(chain).insert({{location, {{product, price}}}});
+        }
+        else { //chain found, location found
+            int i = 0;
+                for(vector<Product>::iterator it = chains.at(chain).at(location).begin();
+                it != chains.at(chain).at(location).end(); ++it) {
+                    if(it->product_name == product) { //chain found, location found, product found
+                        it->price = price;
+                        i = 1;
+                    }
+                }
+            if(i == 0) { // chain found, location found, product not found
+                chains.at(chain).at(location).push_back({product, price});
+            }
+            else {
+                i = 0;
+            }
+        }
+    }
+    if(find(product_names.begin(), product_names.end(), product) == product_names.end()) { //product not found in list
+        product_names.push_back(product);
+    }
+}
+
+
+bool read_file() {
     string file_name;
     cout << "Input file: ";
     getline(cin, file_name);
@@ -79,71 +120,28 @@ bool lue_tiedosto() {
         return false;
     }
     string row;
-    std::vector<std::string> splitted_row; //rivi splitattuna haluttuihin osiin
-    string chain;
-    string location;
-    string product;
-    map<string, vector<Product>> temp;
-    double price;
-    string price_information;
-
+    std::vector<std::string> splitted_row;
     while(getline(tiedosto_olio,row)) {
         splitted_row = split(row, ';');
-        //Check for erroneous lines
+
+        //Check for erroneous lines, if yes, end program
         if(splitted_row.size() != 4 || find(splitted_row.begin(),
                 splitted_row.end(), "") != splitted_row.end()) {
             cout << "Error: the input file has an erroneous line" << endl;
             return false;
         }
 
-        //jaa omaan funktioon tästä eteen päin? (e: add_to_data_structure)
-
-        chain = splitted_row.at(0);
-        location = splitted_row.at(1);
-        product = splitted_row.at(2);
-        price_information = (splitted_row.at(3));
-        if(price_information == "out-of-stock") {
-            price = numeric_limits<int>::max();
-        }
-        else {
-            price = stod(price_information);
-        }
-        if(chains.find(chain) == chains.end()) { //chain not found
-            temp = {{location, {{product, price}}}};
-            chains.insert(make_pair(chain, temp));
-        }
-        else{ //chain found
-            if(chains.at(chain).find(location) == chains.at(chain).end()) { //chain not found, location not found
-                chains.at(chain).insert({{location, {{product, price}}}});
-            }
-            else { //chain found, location found
-                int i = 0;
-                    for(vector<Product>::iterator it = chains.at(chain).at(location).begin();
-                    it != chains.at(chain).at(location).end(); ++it) {
-                        if(it->product_name == product) { //chain found, location found, product found
-                            it->price = price;
-                            i = 1;
-                        }
-                    }
-                if(i == 0) { // chain found, location found, product not found
-                    chains.at(chain).at(location).push_back({product, price});
-                }
-                else {
-                    i = 0;
-                }
-            }
-        }
-        if(find(product_names.begin(), product_names.end(), product) == product_names.end()) { //product found in list
-            product_names.push_back(product);
-        }
+        add_to_data_structure(splitted_row.at(0), splitted_row.at(1),
+          splitted_row.at(2), (splitted_row.at(3)));
     }
     return true;
 }
 
+//Tee lista
 void print_cheapest_places(string product) {
     vector<string> cheapest_places;
     double cheapest_price_so_far = numeric_limits<double>::infinity();
-    bool out_of_stock = false;
+    bool is_out_of_stock = false;
 
     //Käydään läpi tietorakenteessa oleva jokainen tuote, merkaten muistiin
     //halvimpien sijainnit (liikkeet) ja hinta
@@ -153,7 +151,7 @@ void print_cheapest_places(string product) {
                 string temp;
                 if(it3->product_name == product) {
                     if(it3->price == numeric_limits<int>::max()) {
-                        out_of_stock = true;
+                        is_out_of_stock = true;
                     }
                     else if(it3->price < cheapest_price_so_far) {
                         cheapest_price_so_far = it3->price;
@@ -164,21 +162,20 @@ void print_cheapest_places(string product) {
                     else if(it3->price == cheapest_price_so_far) {
                         temp = it1->first + " " + it2->first;
                         cheapest_places.push_back(temp);
-
                     }
                 }
             }
         }
     }
-    //Tulostetaan tulokset
 
+    //Tulostetaan tulokset
     if(cheapest_price_so_far != numeric_limits<double>::infinity()) {
-        cout << cheapest_price_so_far << endl;
-        for(string cheap_individual : cheapest_places) {
-            cout << cheap_individual << endl;
+        cout << cheapest_price_so_far << " euros" << endl;
+        for(string individual : cheapest_places) {
+            cout << individual << endl;
         }
     }
-    else if(out_of_stock == true) {
+    else if(is_out_of_stock == true) {
         cout << "The product is temporarily out of stock everywhere" << endl;
     }
     else {
@@ -186,7 +183,7 @@ void print_cheapest_places(string product) {
     }
 }
 
-bool pro_compare(Product a, Product b) {
+bool compare_product_names(Product a, Product b) {
     return a.product_name < b.product_name;
 }
 
@@ -198,7 +195,8 @@ void print_selection(string chain, string location) {
         cout << "Error: unknown store" << endl;
     }
     else {
-        sort(chains.at(chain).at(location).begin(), chains.at(chain).at(location).end(), pro_compare);
+        sort(chains.at(chain).at(location).begin(),
+             chains.at(chain).at(location).end(), compare_product_names);
         for(vector<Product>::iterator it = chains.at(chain).at(location).begin();
         it != chains.at(chain).at(location).end(); ++it) {
             if(it->price != numeric_limits<int>::max()) {
@@ -211,8 +209,8 @@ void print_selection(string chain, string location) {
     }
 }
 
-bool is_command_length(vector<string> command_parts, int right_num) {
-    if(command_parts.size() != right_num) {
+bool is_command_length(vector<string> command_parts, int right_length) {
+    if(command_parts.size() != right_length) {
         cout << "Error: error in command " << command_parts.at(0) << endl;
         return false;
     }
@@ -222,7 +220,7 @@ bool is_command_length(vector<string> command_parts, int right_num) {
 }
 
 int main() {
-    if(lue_tiedosto() == false) {
+    if(read_file() == false) {
         return EXIT_FAILURE;
     }
     //Asetetaan tarkkuus kaikille lukujen tulostuksille
@@ -267,14 +265,14 @@ int main() {
             }
         }
         else if(command == "products") {
-            if(is_command_length(command_parts, 2) == true) {
+            if(is_command_length(command_parts, 1) == true) {
                 for(string product_name : product_names) {
                     cout << product_name << endl;
                 }
             }
         }
         else if(command != "quit") {
-            if(is_command_length(command_parts, 2) == true) {
+            if(is_command_length(command_parts, 1) == true) {
                 cout << "Error: unknown command: " << command_parts.at(0) << endl;
             }
         }
