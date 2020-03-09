@@ -75,8 +75,7 @@ bool lue_tiedosto() {
     ifstream tiedosto_olio(file_name);
 
     if(not tiedosto_olio) {
-        cout << "Error! The file " << file_name
-             << " cannot be opened." << endl;
+        cout << "Error: the input file cannot be opened" << endl;
         return false;
     }
     string row;
@@ -88,10 +87,17 @@ bool lue_tiedosto() {
     double price;
     string price_information;
 
-    //jaa omaan funktioon tästä eteen päin?
-
-    while(getline(tiedosto_olio,row)) { //read file until all lines read
+    while(getline(tiedosto_olio,row)) {
         splitted_row = split(row, ';');
+        //Check for erroneous lines
+        if(splitted_row.size() != 4 || find(splitted_row.begin(),
+                splitted_row.end(), "") != splitted_row.end()) {
+            cout << "Error: the input file has an erroneous line" << endl;
+            return false;
+        }
+
+        //jaa omaan funktioon tästä eteen päin? (e: add_to_data_structure)
+
         chain = splitted_row.at(0);
         location = splitted_row.at(1);
         product = splitted_row.at(2);
@@ -257,7 +263,7 @@ int main() {
         else if(command_parts.at(0) == "cheapest") {
             if(is_command_length(command_parts, 2) == true) {
                 string product = command_parts.at(1);
-                print_cheapest_places(product); //tarkista toimivuus
+                print_cheapest_places(product);
             }
         }
         else if(command == "products") {
