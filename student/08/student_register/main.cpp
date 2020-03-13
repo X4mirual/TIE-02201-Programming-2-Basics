@@ -41,6 +41,8 @@ std::vector<std::string> split(const std::string& s,
 bool read_data(const std::string file_name,
                std::map< std::string, Student* >& alphabetical_order,
                std::map< std::string, Student* >& numerical_order) {
+        //yllä olevat toimivat pointtereina mainissa luotuihin
+        //yllä oleviin tallennetaan manissa luotujen muistien osoite
     std::ifstream file_object(file_name);
     if( !file_object ) {
         return false;
@@ -53,10 +55,22 @@ bool read_data(const std::string file_name,
         if(parts.size() != 6) {
             return false;
         }
+        //"new" allocates required size of bytes and a pointer to the first block
+        //-> "new" tallentaa tiedot ja palauttaa tallennuspaikan osoitteen
 
         Student* new_student = new Student({parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]});
-        numerical_order[parts[0]] = new_student;
-        alphabetical_order[parts[1]] = new_student;
+
+        //numerical_order.insert(parts.at(0), new_student)
+        //numerical_order.insert(987654, 0x00002)
+
+        numerical_order[parts[0]] = new_student; //e: parts[0] = 987654 (student_id)
+
+        //alphabetical_order.insert(mike, 0x00002)
+
+        alphabetical_order[parts[1]] = new_student; //e: parts[1] = "mike" (student_name)
+
+        //ovat mappeja, joten yllä olevalla järjestelyllä voivat
+        //eri avaimilla viitata samaan tietoon B)
     }
     file_object.close();
     return true;
@@ -69,6 +83,14 @@ void print_data(const Student s) {
               << s.phone_number << std::endl
               << s.email << std::endl
               << s.skype << std::endl << std::endl;
+}
+
+void save_data(const Student s) {
+    std::cout << s.student_number << ";" << s.user_id << ";"
+              << s.name << ";"
+              << s.phone_number << ";"
+              << s.email << ";"
+              << s.skype << std::endl;
 }
 
 bool is_valid_phone_number(const std::string number) {
@@ -87,6 +109,7 @@ int main() {
     std::cout << "Student file: ";
     std::getline(std::cin, file_name);
 
+    //mapissä <string, pointteri>
     std::map< std::string, Student* > user_ids;
     std::map< std::string, Student* > student_numbers;
     if(not read_data(file_name, user_ids, student_numbers)) {
@@ -103,7 +126,7 @@ int main() {
         std::vector<std::string> parts = split(line, ' ', true);
 
         if(parts.empty()) {
-            continue;
+            continue; //nais! :D
         }
         std::string command = parts.at(0);
 
@@ -114,7 +137,7 @@ int main() {
                 continue;
             } else {
                 for(auto pair: user_ids) {
-                    print_data(*(pair.second));
+                    print_data(*(pair.second)); //printtaa olio, joka on muistipaikassa
                 }
             }
 
@@ -135,7 +158,43 @@ int main() {
                 std::cout << "Erroneous parameters!" << std::endl << HELP_TEXT;
                 continue;
             }
-            // TODO: Add functionality here
+            std::string student_number = parts.at(1);
+
+
+            if(student_numbers.find(student_number) == student_numbers.end()) {
+                std::cout << "There is no student with the given number!"
+                          << std::endl << std::endl;
+                continue;
+            }
+
+
+
+            std::cout << "Enter a new phone number: ";
+            std::string new_phone_number;
+            getline(std::cin, new_phone_number);
+            std::cout << std::endl;
+            if (not is_valid_phone_number(new_phone_number)) {
+                continue;
+            }
+            Student* ptr = nullptr;
+            ptr = student_numbers.at(student_number);
+            ptr->phone_number = new_phone_number;
+
+
+            //Miten saadaan tieto tallennettua txt-tiedostoon?
+            std::ofstream output_to_file;
+            output_to_file.open(file_name);
+
+            for(auto student : student_numbers) {
+                //save_data(*(student.second));
+                Student s = *(student.second);
+                output_to_file << s.student_number << ";" << s.user_id << ";"
+                          << s.name << ";"
+                          << s.phone_number << ";"
+                          << s.email << ";"
+                          << s.skype << std::endl;
+            }
+
 
 
         } else if(command == "Q" or command == "q") {
