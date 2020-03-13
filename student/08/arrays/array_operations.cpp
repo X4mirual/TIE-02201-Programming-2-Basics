@@ -1,5 +1,4 @@
 #include "array_operations.hh"
-#include <iostream>
 
 int greatest_v1(int* itemptr, int size) {
     int greatest = 0;
@@ -28,16 +27,13 @@ int greatest_v2(int* itemptr, int* endptr) {
 void copy(int* itemptr, int* endptr, int* targetptr) {
     int i = 0;
     --endptr;
+    ++endptr;
     while(i < 30) {
-        targetptr[i] = itemptr[i];
+        *(targetptr + i) = *(itemptr + i);
         ++i;
     }
 }
 
-/* Reverses the elements of the array
- * int* leftptr: pointer to the first element of the reversable part
- * int* rightptr: pointer to the next memory address after the reversable part
- */
 void reverse(int* leftptr, int* rightptr) {
     --rightptr;
     while(leftptr < rightptr) {
@@ -48,17 +44,3 @@ void reverse(int* leftptr, int* rightptr) {
         --rightptr;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
