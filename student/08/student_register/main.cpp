@@ -185,7 +185,7 @@ int main() {
             std::ofstream output_to_file;
             output_to_file.open(file_name);
 
-            for(auto student : student_numbers) {
+            for(auto student : user_ids) {
                 //save_data(*(student.second));
                 Student s = *(student.second);
                 output_to_file << s.student_number << ";" << s.user_id << ";"
