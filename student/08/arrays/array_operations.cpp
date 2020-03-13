@@ -25,22 +25,26 @@ int greatest_v2(int* itemptr, int* endptr) {
 }
 
 void copy(int* itemptr, int* endptr, int* targetptr) {
-    int i = 0;
-    --endptr;
-    ++endptr;
-    while(i < 30) {
-        *(targetptr + i) = *(itemptr + i);
-        ++i;
+
+
+    int* a_osoitin = itemptr;
+    int* b_osoitin = targetptr;
+    while(a_osoitin != endptr) {
+        *b_osoitin = *a_osoitin;
+        ++b_osoitin;
+        ++a_osoitin;
     }
 }
 
 void reverse(int* leftptr, int* rightptr) {
-    --rightptr;
-    while(leftptr < rightptr) {
-        int temp = *leftptr;
-        *leftptr = *rightptr;
-        *rightptr = temp;
-        ++leftptr;
-        --rightptr;
+    int* v_leftptr = leftptr;
+    int* v_rightptr = rightptr - 1;
+
+    while(v_leftptr < v_rightptr) {
+        int temp = *v_leftptr;
+        *v_leftptr = *v_rightptr;
+        *v_rightptr = temp;
+        ++v_leftptr;
+        --v_rightptr;
     }
 }
