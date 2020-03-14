@@ -41,17 +41,17 @@ int main()
 
             else if(c == '+') {
                 merkit[index - 2] = merkit[index - 2] + merkit[index - 1];
-                merkit[index - 1] = 0;
+                merkit[index - 1] = -1;
                 index -= 2;
             }
             else if(c == '-') {
                 merkit[index - 2] = merkit[index - 2] - merkit[index - 1];
-                merkit[index - 1] = 0;
+                merkit[index - 1] = -1;
                 index -= 2;
             }
             else if(c == '*') {
                 merkit[index - 2] = merkit[index - 2] * merkit[index - 1];
-                merkit[index - 1] = 0;
+                merkit[index - 1] = -1;
                 index -= 2;
             }
             else if(c == '/') {
@@ -61,7 +61,7 @@ int main()
                     break;
                 }
                 merkit[index - 2] = merkit[index - 2] / merkit[index - 1];
-                merkit[index - 1] = 0;
+                merkit[index - 1] = -1;
                 index -= 2;
             }
         }
@@ -81,7 +81,7 @@ int main()
     if(failure == true) {
         return 1;
     }
-    if(merkit[1] != 0) {
+    if(merkit[1] != -1) {
         cout << "Error: Too few operators" << endl;
         failure = true;
     }
