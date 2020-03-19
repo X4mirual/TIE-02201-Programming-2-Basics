@@ -16,7 +16,7 @@ int main() {
     cout << endl << "print_from_top_to_bottom (deck is empty)" << endl;
     deck.print_from_top_to_bottom(cout);
 
-    cout << endl << "add * n" << endl;
+    cout << endl << "add cards to deck" << endl;
     for(int i = 0; i < n; i++) {
         deck.add(i);
     }
@@ -24,14 +24,14 @@ int main() {
     cout << endl << "print_from_top_to_bottom" << endl;
     deck.print_from_top_to_bottom(cout);
 
-    cout << endl << "bottom_to_top * 2" << endl;
+    cout << endl << "do bottom_to_top twice" << endl;
     deck.bottom_to_top();
     deck.bottom_to_top();
 
     cout << endl << "print_from_top_to_bottom" << endl;
     deck.print_from_top_to_bottom(cout);
 
-    cout << endl << "top_to_bottom * 1" << endl;
+    cout << endl << "do top_to_bottom once" << endl;
     deck.top_to_bottom();
 
     cout << endl << "print_from_top_to_bottom" << endl;
@@ -39,11 +39,11 @@ int main() {
 
 //    cout << endl << "print_from_bottom_to_top" << endl;
 //    deck.print_from_bottom_to_top(cout);
-
+/*
     cout << endl << "Remove top card" << endl;
     deck.remove(removed);
     deck.print_from_top_to_bottom(cout);
-
+*/
 
     cout << endl << "Move top card to bottom" << endl;
     deck.top_to_bottom();
