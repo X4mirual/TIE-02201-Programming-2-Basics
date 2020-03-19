@@ -43,6 +43,45 @@ bool Cards::remove(int& id){
     }
 }
 
+// Moves the last element of the data structure as the first one.
+// Returns false, if the data structure is empty, otherwise returns true.
+bool Cards::bottom_to_top() {
+    if(top_ == nullptr) {
+        return false;
+    }
+    Card_data* chosen_card = top_;
+    Card_data* prev_chosen = nullptr;
+
+    //prev_chosen will be the second last card
+    // chosen_card will be the last card
+    while(chosen_card->next != nullptr) {
+        prev_chosen = chosen_card;
+        chosen_card = chosen_card->next;
+    }
+    chosen_card->next = top_;
+    top_ = chosen_card;
+    prev_chosen->next = nullptr;
+    return true;
+}
+
+// Moves the first element of the data structure as the last one.
+// Returns false, if the data structure is empty, otherwise returns true.
+bool Cards::top_to_bottom() {
+    if(top_ == nullptr) {
+        return false;
+    }
+    Card_data* prev_top = top_;
+    top_ = top_->next;
+    Card_data* last_card = top_;
+
+    while(last_card->next != nullptr) {
+        last_card = last_card->next;
+    }
+    prev_top->next = nullptr;
+    last_card->next = prev_top;
+    return true;
+
+}
 
 void Cards::print_from_top_to_bottom(std::ostream& s) {
     Card_data* to_be_printed = top_;
