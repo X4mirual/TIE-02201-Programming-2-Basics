@@ -41,6 +41,7 @@ bool Cards::remove(int& id){
         top_ = top_->next;
         delete to_be_removed;
     }
+    return true;
 }
 
 // Moves the last element of the data structure as the first one.
@@ -88,7 +89,7 @@ void Cards::print_from_top_to_bottom(std::ostream& s) {
     int running_number = 1;
 
     while(to_be_printed != nullptr) {
-        cout << running_number << ": " << to_be_printed->data << endl;
+        s << running_number << ": " << to_be_printed->data << endl;
         ++running_number;
         to_be_printed = to_be_printed->next;
     }
