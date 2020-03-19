@@ -84,6 +84,13 @@ bool Cards::top_to_bottom() {
 
 }
 
+void Cards::print_from_bottom_to_top(ostream &s)
+{
+    s << "";
+
+}
+
+
 void Cards::print_from_top_to_bottom(std::ostream& s) {
     Card_data* to_be_printed = top_;
     int running_number = 1;
