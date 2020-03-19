@@ -39,11 +39,11 @@ int main() {
 
 //    cout << endl << "print_from_bottom_to_top" << endl;
 //    deck.print_from_bottom_to_top(cout);
-/*
+
     cout << endl << "Remove top card" << endl;
     deck.remove(removed);
     deck.print_from_top_to_bottom(cout);
-*/
+
 
     cout << endl << "Move top card to bottom" << endl;
     deck.top_to_bottom();
