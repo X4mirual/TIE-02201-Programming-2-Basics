@@ -7,6 +7,7 @@ using namespace std;
 int main() {
     cout << "constructor" << endl;
     Cards deck;
+    int removed;
 
     int n = 0;
     cout << "Enter amount of test cards: ";
@@ -22,14 +23,16 @@ int main() {
 
     cout << endl << "print_from_top_to_bottom" << endl;
     deck.print_from_top_to_bottom(cout);
-
+/*
     cout << endl << "bottom_to_top * 2" << endl;
     deck.bottom_to_top();
     deck.bottom_to_top();
+*/
 
     cout << endl << "print_from_top_to_bottom" << endl;
     deck.print_from_top_to_bottom(cout);
 
+    /*
     cout << endl << "top_to_bottom * 1" << endl;
     deck.top_to_bottom();
 
@@ -38,6 +41,12 @@ int main() {
 
     cout << endl << "print_from_bottom_to_top" << endl;
     deck.print_from_bottom_to_top(cout);
+*/
+
+    cout << endl << "Remove top card" << endl;
+    deck.remove(removed);
+    deck.print_from_top_to_bottom(cout);
+
 
     cout << endl << "destructor" << endl;
     return EXIT_SUCCESS;
