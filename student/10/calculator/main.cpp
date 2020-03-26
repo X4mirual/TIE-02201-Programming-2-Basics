@@ -95,7 +95,6 @@ int main() {
 
         // TODO: Implement command execution here!
         bool printed = false;
-        bool only_numbers;
 
         for(auto c : COMMANDS) {
             if(command_to_be_executed == c.str) {
