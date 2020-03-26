@@ -31,11 +31,12 @@ struct Command {
     double(*action)(double, double);
 };
 
-const vector<Command> COMMANDS = {
+const vector<Command> COMMANDS = { //Vektori koostuu Command-structeista
     {"+", 2, false, addition},
     {"-", 2, false, subtraction},
     {"*", 2, false, multiplication},
     {"/", 2, false, division},
+    {"^", 2, false, power},
     {"PLUS", 2, false, addition},
     {"MINUS", 2, false, subtraction},
     {"TIMES", 2, false, multiplication},
@@ -54,6 +55,8 @@ const vector<Command> COMMANDS = {
     {"DECREASE", 2, false, subtraction},
     {"MULTIPLY", 2, false, multiplication},
     {"DIVIDE", 2, false, division},
+    {"POWER", 2, false, power},
+    {"EXP", 2, false, power},
     {"STOP", 0, true, nullptr},
     {"QUIT", 0, true, nullptr},
     {"EXIT", 0, true, nullptr},
@@ -86,9 +89,45 @@ int main() {
         }
 
         string command_to_be_executed = pieces.at(0);
+        for(char& a : command_to_be_executed) {
+            a = toupper(a);
+        }
 
         // TODO: Implement command execution here!
+        bool printed = false;
+        bool only_numbers;
 
+        for(auto c : COMMANDS) {
+            if(command_to_be_executed == c.str) {
+                if(pieces.size() == c.parameter_number + 1) {
+                    if(c.exit == true) {
+                        cout << GREETING_AT_END << endl;
+                        return EXIT_SUCCESS;
+                    }
+                    double param_1;
+                    if(not string_to_double(pieces.at(1), param_1)) {
+                        cout << "Error: a non-number operand." << endl;
+                        printed = true;
+                        break;
+                    }
+                    double param_2;
+                    if(not string_to_double(pieces.at(2), param_2)) {
+                        cout << "Error: a non-number operand." << endl;
+                        printed = true;
+                        break;
+                    }
+                    cout << c.action(param_1, param_2) << endl;
+                    printed = true;
+                }
+                else {
+                    cout << "Error: wrong number of parameters." << endl;
+                    printed = true;
+                }
+            }
+        }
+        if(printed == false) {
+            cout << "Error: unknown command." << endl;
+        }
     }
 }
 
