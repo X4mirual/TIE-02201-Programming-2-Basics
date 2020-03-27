@@ -42,6 +42,9 @@ bool Cards::remove(int &id) {
 
 // Reverses the content of the data structure as opposite.
 void Cards::reverse() {
+    if(top_ == nullptr) {
+        return;
+    }
     shared_ptr<Card_data> bottom = top_;
     int i = 0;
     while ( bottom->next != nullptr ) {
