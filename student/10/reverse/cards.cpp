@@ -53,28 +53,34 @@ void Cards::reverse() {
 
     shared_ptr<Card_data> chosen_card = top_;
     shared_ptr<Card_data> prev_chosen;
-   /* while(chosen_card->next != nullptr) {
-        prev_chosen = chosen_card;
-        chosen_card = chosen_card->next;
-        top_ = chosen_card;
-}*/
-    //card values: 1,2,3,4,5
-    //chosen: 5
-    chosen_card = chosen_card->next; //chosen: 4
-    int n = 1;
-    while(chosen_card->next != nullptr) {
-        prev_chosen = chosen_card; //prev_chosen = 4
-        chosen_card = chosen_card->next; //chosen_card = 3
-        //top_ = 5
-        prev_chosen->next = top_;
-        if(n == 1) {
-            top_->next = nullptr;
-            n = 0;
-        }
-        top_ = prev_chosen;
+
+    if(i == 0) {
+        return;
     }
-    chosen_card->next = top_;
-    top_ = chosen_card;
+    else if(i == 1) {
+        bottom->next = top_;
+        top_->next = nullptr;
+        top_ = bottom;
+    }
+
+
+    else {
+        chosen_card = chosen_card->next; //chosen: 4
+        int n = 1;
+        while(chosen_card->next != nullptr) {
+            prev_chosen = chosen_card; //prev_chosen = 4
+            chosen_card = chosen_card->next; //chosen_card = 3
+            //top_ = 5
+            prev_chosen->next = top_;
+            if(n == 1) {
+                top_->next = nullptr;
+                n = 0;
+            }
+            top_ = prev_chosen;
+        }
+        chosen_card->next = top_;
+        top_ = chosen_card;
+    }
 }
 
 // Do not write the stubs of the methods remove and reverse by yourself here,
