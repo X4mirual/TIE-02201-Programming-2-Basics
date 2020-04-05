@@ -21,18 +21,19 @@ bool Instance::is_named(std::string name) {
 
 void Instance::print() {
     cout << toteutusaika_ << endl;
-    cout << "Starting date: ";
+    cout << INDENT << "Starting date: ";
     utils::today.print();
     cout << endl;
-    cout << "Amount of students: " << attendees_.size() << endl;
+    cout << INDENT << "Amount of students: " << attendees_.size() << endl;
 }
 
 void Instance::print_students() {
     for(auto attendee : attendees_) {
+        cout << INDENT;
         attendee->print();
     }
 }
 
-void Instance::add_attendee(string id) {
-
+void Instance::add_attendee(Account* attendee) {
+    attendees_.push_back(attendee);
 }

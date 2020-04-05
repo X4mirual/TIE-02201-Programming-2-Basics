@@ -26,7 +26,20 @@ void Account::print() const
               << email_ << std::endl;
 }
 
-std::string Account::get_email()
-{
+std::string Account::get_email() {
     return email_;
 }
+
+void Account::add_instance(Instance* instance) {
+    current_.push_back(instance);
+}
+
+
+
+
+
+
+
+
+
+

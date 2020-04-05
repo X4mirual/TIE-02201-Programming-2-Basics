@@ -43,6 +43,12 @@ public:
      */
     std::string get_email();
 
+    /** TODO
+     * @brief
+     * @param
+     */
+    void add_instance(Instance* instance);
+
 private:
     std::string full_name_;
     std::string last_name_;

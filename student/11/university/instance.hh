@@ -15,6 +15,7 @@
 #include "course.hh" // oma lisäys
 #include "date.hh" // oma lisäys
 #include "utils.hh" // oma lisäys
+#include <map> // oma lisäys
 #include <vector>
 #include <iostream>
 #include <string>
@@ -60,7 +61,7 @@ public:
      * @param params:
      *
      */
-    void add_attendee(std::string id);
+    void add_attendee(Account* attendee);
 
 private:
     std::string toteutusaika_;
