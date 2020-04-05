@@ -16,19 +16,6 @@ University::~University()
 
 }
 
-void University::add_course(Params params)
-{
-    if ( courses_.find(params.at(0)) != courses_.end() ){
-        std::cout << ALREADY_EXISTS << std::endl;
-        return;
-    } else {
-        std::cout << NEW_COURSE << std::endl;
-    }
-
-    Course* n_course = new Course(params.at(0), params.at(1));
-    courses_.insert({n_course->get_code(), n_course});
-}
-
 void University::print_courses(Params)
 {
     for ( auto course : courses_ ){
@@ -93,32 +80,46 @@ void University::add_staff_to_course(Params params)
     courses_.at(params.at(0))->add_staff(accounts_.at(std::stoi(params.at(1))));
 }
 
-void University::add_instance(Params params)
+void University::add_course(Params params) // TIE-02200 "Ohjelmointi 2" - kurssitunnus kurssinimi
+{
+    if ( courses_.find(params.at(0)) != courses_.end() ){
+        std::cout << ALREADY_EXISTS << std::endl;
+        return;
+    } else {
+        std::cout << NEW_COURSE << std::endl;
+    }
+
+    Course* n_course = new Course(params.at(0), params.at(1));
+    courses_.insert({n_course->get_code(), n_course});
+}
+
+void University::add_instance(Params params) { // TIE-02200 K2020 - kurssitunnut toteutuskerta
+    Course* the_course = courses_.find(params.at(0)); //pointteri haluttuun kurssiin
+    Instance* n_instance = new Instance(params.at(1));
+    the_course->new_instance(n_instance);
+}
+
+void University::sign_up_on_course(Params params) // 2
 {
 
 }
 
-void University::sign_up_on_course(Params params)
+void University::complete_course(Params params) // 3
 {
 
 }
 
-void University::complete_course(Params params)
+void University::print_signups(Params params) // 4
 {
 
 }
 
-void University::print_signups(Params params)
+void University::print_study_state(Params params) // 5
 {
 
 }
 
-void University::print_study_state(Params params)
-{
-
-}
-
-void University::print_completed(Params params)
+void University::print_completed(Params params) // 6
 {
 
 }

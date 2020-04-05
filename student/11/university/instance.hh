@@ -12,10 +12,15 @@
 
 #include "account.hh"
 #include "date.hh"
+#include "course.hh" // oma lisäys
+#include "date.hh" // oma lisäys
+#include "utils.hh" // oma lisäys
 #include <vector>
 #include <iostream>
 #include <string>
 #include <algorithm>
+
+using Params = const std::vector<std::string>&;
 
 // Forward-declaration of Course, so that instance can point to the course it belongs to.
 class Course;
@@ -27,8 +32,19 @@ const std::string INDENT = "    ";
 class Instance
 {
 public:
-    Instance();
+    Instance(std::string toteutusaika);
+
+    /** TO DO
+     * @brief
+     * @param params:
+     *
+     */
+    bool is_named(std::string name);
+
 private:
+    std::string toteutusaika_;
+    Date starting_date; // = utils::today;
+    std::vector<Account*> attendees_;
 
 };
 

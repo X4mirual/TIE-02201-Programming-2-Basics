@@ -15,6 +15,8 @@ Account::Account(std::string full_name, std::string email, int account_number):
     first_name_ = name.front();
 }
 
+// TO DO: Destructor?
+
 
 void Account::print() const
 {
