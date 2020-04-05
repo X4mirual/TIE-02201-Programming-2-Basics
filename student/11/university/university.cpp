@@ -93,36 +93,41 @@ void University::add_course(Params params) // TIE-02200 "Ohjelmointi 2" - kurssi
     courses_.insert({n_course->get_code(), n_course});
 }
 
+//Itse tehdyt alkavat
+
 void University::add_instance(Params params) { // TIE-02200 K2020 - kurssitunnut toteutuskerta
-    Course* the_course = courses_.find(params.at(0)); //pointteri haluttuun kurssiin
+    Course* the_course = courses_.at(params.at(0)); //pointteri haluttuun kurssiin
     Instance* n_instance = new Instance(params.at(1));
     the_course->new_instance(n_instance);
 }
 
-void University::sign_up_on_course(Params params) // 2
+void University::sign_up_on_course(Params params) {
+    Course* the_course = courses_.at(params.at(0));
+    Instance* the_instance = the_course->get_instance(params.at(1));
+    //the_instance
+}
+
+void University::complete_course(Params params)
 {
 
 }
 
-void University::complete_course(Params params) // 3
+void University::print_signups(Params params) {
+    Course* the_course = courses_.at(params.at(0));
+    the_course->print_signups();
+}
+
+void University::print_study_state(Params params)
 {
 
 }
 
-void University::print_signups(Params params) // 4
+void University::print_completed(Params params)
 {
 
 }
 
-void University::print_study_state(Params params) // 5
-{
-
-}
-
-void University::print_completed(Params params) // 6
-{
-
-}
+//Itse tehdyt loppuvat
 
 void University::set_date(Params params)
 {

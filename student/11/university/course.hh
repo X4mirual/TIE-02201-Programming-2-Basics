@@ -80,6 +80,7 @@ public:
      * @return true if course has instance named given name, false otherwise
      */
     bool has_instance(const std::string& name);
+
     /**
      * @brief get_instance
      * @param name

@@ -41,9 +41,30 @@ public:
      */
     bool is_named(std::string name);
 
+    /** TO DO
+     * @brief
+     * @param params:
+     *
+     */
+    void print();
+
+    /** TO DO
+     * @brief
+     * @param params:
+     *
+     */
+    void print_students();
+
+    /** TO DO
+     * @brief
+     * @param params:
+     *
+     */
+    void add_attendee(std::string id);
+
 private:
     std::string toteutusaika_;
-    Date starting_date; // = utils::today;
+    Date starting_date_ = utils::today; // = utils::today;
     std::vector<Account*> attendees_;
 
 };
