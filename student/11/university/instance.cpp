@@ -4,14 +4,14 @@
 
 using namespace std;
 
-Instance::Instance(std::string toteutusaika):
-    toteutusaika_(toteutusaika)
+Instance::Instance(std::string instance_code):
+    instance_code_(instance_code)
 {
     //starting_date_ = utils::today;
 }
 
 bool Instance::is_named(std::string name) {
-    if(name == toteutusaika_) {
+    if(name == instance_code_) {
         return true;
     }
     else {
@@ -20,7 +20,7 @@ bool Instance::is_named(std::string name) {
 }
 
 void Instance::print() {
-    cout << toteutusaika_ << endl;
+    cout << instance_code_ << endl;
     cout << INDENT << "Starting date: ";
     utils::today.print();
     cout << endl;
@@ -37,3 +37,12 @@ void Instance::print_students() {
 void Instance::add_attendee(Account* attendee) {
     attendees_.push_back(attendee);
 }
+
+void Instance::remove_attendee(Account* attendee) {
+    auto index = find(attendees_.begin(), attendees_.end(), attendee);
+    attendees_.erase(index);
+}
+
+
+
+

@@ -115,8 +115,18 @@ void University::sign_up_on_course(Params params) { // TIE-02200 K2020 111111
     std::cout << "Signed up on the course instance." << std::endl;
 }
 
-void University::complete_course(Params params)
-{
+void University::complete_course(Params params) {
+    Course* the_course = courses_.at(params.at(0));
+    Instance* the_instance = the_course->get_instance(params.at(1));
+    int student_id = stoi(params.at(2));
+
+    Account* the_attendee = accounts_.at(student_id);
+
+    //Remove attendee from instance attendees
+    the_instance->remove_attendee(the_attendee);
+
+    //Complete course in Account
+    the_attendee->complete_course(the_instance, the_course);
 
 }
 
@@ -132,7 +142,8 @@ void University::print_study_state(Params params)
 
 void University::print_completed(Params params)
 {
-
+    Account* the_student = accounts_.at(stoi(params.at(0)));
+    the_student->print_completed();
 }
 
 //Itse tehdyt loppuvat

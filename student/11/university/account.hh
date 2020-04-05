@@ -49,7 +49,19 @@ public:
      */
     void add_instance(Instance* instance);
 
-private:
+    /** TODO
+     * @brief
+     * @param
+     */
+    void complete_course(Instance* instance, Course* course);
+
+    /** TODO
+     * @brief
+     * @param
+     */
+    void print_completed();
+
+private: 
     std::string full_name_;
     std::string last_name_;
     std::string first_name_;

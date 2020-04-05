@@ -33,7 +33,7 @@ const std::string INDENT = "    ";
 class Instance
 {
 public:
-    Instance(std::string toteutusaika);
+    Instance(std::string instance_code);
 
     /** TO DO
      * @brief
@@ -63,8 +63,16 @@ public:
      */
     void add_attendee(Account* attendee);
 
+    /** TO DO
+     * @brief
+     * @param params:
+     *
+     */
+    void remove_attendee(Account* attendee);
+
+
 private:
-    std::string toteutusaika_;
+    std::string instance_code_;
     Date starting_date_ = utils::today; // = utils::today;
     std::vector<Account*> attendees_;
 
