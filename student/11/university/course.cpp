@@ -105,8 +105,8 @@ void Course::print_attended(Account* attendee)
 {
     for ( Instance* instance : instances_ ){
         if (instance->is_attending(attendee)){
-            std::cout << course_code_ << " : "
-            << name_ << instance->get_name() << std::endl;
+            std::cout << course_code_ << " : " << name_
+            << " " << instance->get_name() << std::endl;
         }
     }
 }

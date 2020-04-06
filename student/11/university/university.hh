@@ -87,7 +87,7 @@ public:
      * @brief add_instance
      * @param params: course code, instance name
      * Adds an instance to given course.
-     * If course is not found, gives an error.
+     * If course is not found, prints an error.
      */
     void add_instance(Params params);
 

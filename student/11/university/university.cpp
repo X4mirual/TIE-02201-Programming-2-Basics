@@ -98,18 +98,56 @@ void University::add_course(Params params) // TIE-02200 "Ohjelmointi 2" - kurssi
 //Itse tehdyt alkavat
 
 
-
+// Virhetapaukset: jos instanssi on jo olemassa? DONE
+// Virhetapaukset: jos opintojaksoa ei ole olemassa? DONE
 void University::add_instance(Params params) { // TIE-02200 K2020 - kurssitunnut toteutuskerta
+    std::string course_name = params.at(0);
+    std::string instance_name = params.at(1);
+    if(courses_.find(course_name) == courses_.end()) {
+        std::cout << CANT_FIND << course_name << std::endl;
+        return;
+    }
     Course* the_course = courses_.at(params.at(0)); //pointteri haluttuun kurssiin
-    Instance* n_instance = new Instance(params.at(1));
+    if(the_course->has_instance(instance_name))
+    {
+        std::cout << INSTANCE_EXISTS << std::endl;
+        return;
+    }
+    Instance* n_instance = new Instance(instance_name);
     the_course->new_instance(n_instance);
 }
 
+//Virhetapaukset: if attendee already attending DONE
+//Virhetapaukset: opiskelija ei löydy (opiskelijatunnuksellaan)
+//Virhetapaukset: kurssi ei löydy DONE
+//Virhetapaukset: toteutuskerta ei löydy DONE
 void University::sign_up_on_course(Params params) { // TIE-02200 K2020 111111
+    std::string instance_name = params.at(1);
+    int student_id = stoi(params.at(2));
+
+    if(courses_.find(params.at(0)) == courses_.end()) { // kurssia ei löydy
+        std::cout << CANT_FIND << params.at(0) << std::endl;
+        return;
+    }
     Course* the_course = courses_.at(params.at(0));
+
+    if(not the_course->has_instance(instance_name)) { // toteutusta ei löydy
+        std::cout << CANT_FIND << instance_name << std::endl;
+        return;
+    }
+
+    if(accounts_.find(student_id) == accounts_.end()) { // opiskelija ei löydy
+        std::cout << CANT_FIND << student_id << std::endl;
+        return;
+    }
+
     Instance* the_instance = the_course->get_instance(params.at(1));
-    int id = stoi(params.at(2));
-    Account* the_attendee = accounts_.at(id);
+    Account* the_attendee = accounts_.at(student_id);
+    if(the_instance->is_attending(the_attendee)) {
+        std::cout << "Error: Student has already registered on this course."
+                  << std::endl;
+        return;
+    }
     the_instance->add_attendee(the_attendee);
     the_attendee->add_instance(the_instance);
     std::cout << "Signed up on the course instance." << std::endl;
@@ -136,15 +174,18 @@ void University::print_signups(Params params) {
 }
 
 void University::print_study_state(Params params)
-{ //atm prints only current (doesn't print completed)
+{
     int student_id = stoi(params.at(0));
     Account* attendee = accounts_.at(student_id);
     std::map<std::string, Course*>::iterator course_itr = courses_.begin();
 
+    std::cout << "Current:" << std::endl;
     while(course_itr != courses_.end()) {
         course_itr->second->print_attended(attendee);
         ++course_itr;
     }
+
+    std::cout << "Completed:" << std::endl;
     attendee->print_completed();
 }
 
