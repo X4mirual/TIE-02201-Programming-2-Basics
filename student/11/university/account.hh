@@ -61,7 +61,8 @@ public:
      */
     void print_completed();
 
-private: 
+
+private:
     std::string full_name_;
     std::string last_name_;
     std::string first_name_;

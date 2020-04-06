@@ -100,6 +100,8 @@ public:
      */
     int get_credits() const;
 
+    void print_attended(Account* attendee);
+
 private:
     std::string course_code_;
     std::string name_;

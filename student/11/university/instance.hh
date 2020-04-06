@@ -70,6 +70,15 @@ public:
      */
     void remove_attendee(Account* attendee);
 
+    /** TO DO
+     * @brief
+     * @param params:
+     *
+     */
+    bool is_attending(Account* account);
+
+    std::string get_name();
+
 
 private:
     std::string instance_code_;

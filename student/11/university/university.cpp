@@ -136,8 +136,16 @@ void University::print_signups(Params params) {
 }
 
 void University::print_study_state(Params params)
-{
+{ //atm prints only current (doesn't print completed)
+    int student_id = stoi(params.at(0));
+    Account* attendee = accounts_.at(student_id);
+    std::map<std::string, Course*>::iterator course_itr = courses_.begin();
 
+    while(course_itr != courses_.end()) {
+        course_itr->second->print_attended(attendee);
+        ++course_itr;
+    }
+    attendee->print_completed();
 }
 
 void University::print_completed(Params params)

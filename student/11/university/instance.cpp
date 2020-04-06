@@ -43,6 +43,18 @@ void Instance::remove_attendee(Account* attendee) {
     attendees_.erase(index);
 }
 
+bool Instance::is_attending(Account* account)
+{
+    if(find(attendees_.begin(), attendees_.end(), account) != attendees_.end()) {
+        return true;
+    }
+    return false;
+}
+
+std::string Instance::get_name() {
+    return instance_code_;
+}
+
 
 
 
