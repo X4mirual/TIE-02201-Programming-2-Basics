@@ -85,8 +85,8 @@ public:
 
 
 private:
-    Date starting_date_;
     std::string instance_code_;
+    Date starting_date_;
     std::vector<Account*> attendees_;
 
 };
