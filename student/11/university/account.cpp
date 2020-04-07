@@ -44,11 +44,30 @@ void Account::print_completed()
     std::cout << "Total credits: " << tot_credits << std::endl;
 }
 
+bool Account::is_not_attending(Instance* the_instance)
+{
+    if(find(current_.begin(), current_.end(), the_instance) == current_.end()) {
+        std::cout << NO_SIGNUPS << std::endl;
+        return true;
+    }
+    return false;
+}
+
+bool Account::is_attending(Instance* the_instance)
+{
+    for(auto instance : current_) {
+        if(instance == the_instance) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void Account::complete_course(Instance* instance, Course* course) {
     completed_.push_back(course);
     auto instance_index = find(current_.begin(), current_.end(), instance);
     current_.erase(instance_index);
+    std::cout << COMPLETED << std::endl;
 }
 
 

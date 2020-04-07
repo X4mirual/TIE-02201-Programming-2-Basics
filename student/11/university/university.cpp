@@ -113,59 +113,57 @@ void University::add_instance(Params params) { // TIE-02200 K2020 - kurssitunnut
         std::cout << INSTANCE_EXISTS << std::endl;
         return;
     }
-    Instance* n_instance = new Instance(instance_name);
+    Instance* n_instance = new Instance(instance_name, utils::today);
     the_course->new_instance(n_instance);
 }
 
 //Virhetapaukset: if attendee already attending DONE
-//Virhetapaukset: opiskelija ei löydy (opiskelijatunnuksellaan)
+//Virhetapaukset: opiskelija ei löydy (opiskelijatunnuksellaan) DONE
 //Virhetapaukset: kurssi ei löydy DONE
 //Virhetapaukset: toteutuskerta ei löydy DONE
+//Virhetapaukset: Today is after instance starting date DONE -EI COMMITISSA VIELÄ-
 void University::sign_up_on_course(Params params) { // TIE-02200 K2020 111111
-    std::string instance_name = params.at(1);
-    int student_id = stoi(params.at(2));
-
-    if(courses_.find(params.at(0)) == courses_.end()) { // kurssia ei löydy
-        std::cout << CANT_FIND << params.at(0) << std::endl;
+    if(not is_valid_parameters3(params)) {
         return;
     }
+
     Course* the_course = courses_.at(params.at(0));
-
-    if(not the_course->has_instance(instance_name)) { // toteutusta ei löydy
-        std::cout << CANT_FIND << instance_name << std::endl;
-        return;
-    }
-
-    if(accounts_.find(student_id) == accounts_.end()) { // opiskelija ei löydy
-        std::cout << CANT_FIND << student_id << std::endl;
-        return;
-    }
-
     Instance* the_instance = the_course->get_instance(params.at(1));
-    Account* the_attendee = accounts_.at(student_id);
+    if(not the_instance->can_be_singned_up_on(utils::today)) {
+        return;
+    }
+
+    Account* the_attendee = accounts_.at(stoi(params.at(2)));
+
+    // Checking if student is attending instance is done on instance side,
+    // because otherwise student could enroll and complete same instance
+    // multiple times
     if(the_instance->is_attending(the_attendee)) {
-        std::cout << "Error: Student has already registered on this course."
+        std::cout << "Error: Student has already registered on this course." //siirrä tulostus Instanceen
                   << std::endl;
         return;
     }
     the_instance->add_attendee(the_attendee);
     the_attendee->add_instance(the_instance);
-    std::cout << "Signed up on the course instance." << std::endl;
+    std::cout << "Signed up on the course instance." << std::endl; //siirrä tulostus Accounttiin
 }
 
-void University::complete_course(Params params) {
+void University::complete_course(Params params) { // TIE-02200 S2019 111112
     Course* the_course = courses_.at(params.at(0));
     Instance* the_instance = the_course->get_instance(params.at(1));
     int student_id = stoi(params.at(2));
 
+    if(not is_valid_parameters3(params)) {
+        return;
+    }
     Account* the_attendee = accounts_.at(student_id);
 
-    //Remove attendee from instance attendees
-    the_instance->remove_attendee(the_attendee);
+    if(the_attendee->is_not_attending(the_instance)) {
+        return;
+    }
 
     //Complete course in Account
     the_attendee->complete_course(the_instance, the_course);
-
 }
 
 void University::print_signups(Params params) {
@@ -219,4 +217,28 @@ void University::advance_by_period(Params)
     std::cout << "New date is ";
     utils::today.print();
     std::cout << std::endl;
+}
+
+bool University::is_valid_parameters3(Params params) // TIE-02200 S2019 111112
+{
+    std::string course_name = params.at(0);
+    std::string instance_name = params.at(1);
+    int student_id = stoi(params.at(2));
+
+    if(courses_.find(course_name) == courses_.end()) {
+        std::cout << CANT_FIND << course_name << std::endl;
+        return false;
+    }
+    Course* the_course = courses_.at(course_name);
+
+    if(not the_course->has_instance(instance_name)) {
+        std::cout << CANT_FIND << instance_name << std::endl;
+        return false;
+    }
+
+    else if(accounts_.find(student_id) == accounts_.end()) {
+        std::cout << CANT_FIND << student_id << std::endl;
+        return false;
+    }
+    return true;
 }

@@ -4,10 +4,10 @@
 
 using namespace std;
 
-Instance::Instance(std::string instance_code):
-    instance_code_(instance_code)
+Instance::Instance(std::string instance_code, Date starting_date):
+    instance_code_(instance_code),
+    starting_date_(starting_date)
 {
-    //starting_date_ = utils::today;
 }
 
 bool Instance::is_named(std::string name) {
@@ -22,7 +22,7 @@ bool Instance::is_named(std::string name) {
 void Instance::print() {
     cout << instance_code_ << endl;
     cout << INDENT << "Starting date: ";
-    utils::today.print();
+    starting_date_.print();
     cout << endl;
     cout << INDENT << "Amount of students: " << attendees_.size() << endl;
 }
@@ -53,6 +53,16 @@ bool Instance::is_attending(Account* account)
 
 std::string Instance::get_name() {
     return instance_code_;
+}
+
+bool Instance::can_be_singned_up_on(Date Uni_today) {
+    if(Uni_today == starting_date_) {
+        return true;
+    }
+    cout << "Error: Can't sign up on instance after the starting date."
+         << endl;
+
+    return false;
 }
 
 

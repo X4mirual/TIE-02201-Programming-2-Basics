@@ -33,7 +33,7 @@ const std::string INDENT = "    ";
 class Instance
 {
 public:
-    Instance(std::string instance_code);
+    Instance(std::string instance_code, Date starting_date);
 
     /** TO DO
      * @brief
@@ -77,12 +77,16 @@ public:
      */
     bool is_attending(Account* account);
 
+
     std::string get_name();
 
 
+    bool can_be_singned_up_on(Date Uni_today);
+
+
 private:
+    Date starting_date_;
     std::string instance_code_;
-    Date starting_date_ = utils::today; // = utils::today;
     std::vector<Account*> attendees_;
 
 };

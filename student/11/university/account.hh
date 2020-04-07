@@ -62,6 +62,11 @@ public:
     void print_completed();
 
 
+    bool is_not_attending(Instance *the_instance);
+
+    bool is_attending(Instance* the_instance);
+
+
 private:
     std::string full_name_;
     std::string last_name_;

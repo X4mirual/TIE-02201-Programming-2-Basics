@@ -101,6 +101,7 @@ int Course::get_credits() const
     return credits_;
 }
 
+/*
 void Course::print_attended(Account* attendee)
 {
     for ( Instance* instance : instances_ ){
@@ -109,6 +110,23 @@ void Course::print_attended(Account* attendee)
             << " " << instance->get_name() << std::endl;
         }
     }
+}*/
+
+void Course::print_attended(Account* attendee)
+{
+    for(Instance* instance : instances_){
+        if(attendee->is_attending(instance)){
+            std::cout << course_code_ << " : " << name_
+            << " " << instance->get_name() << std::endl;
+        }
+    }
 }
+
+
+
+
+
+
+
 
 

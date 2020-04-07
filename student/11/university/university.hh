@@ -159,6 +159,10 @@ private:
     // Keeps track of the next account id to be given
     int running_number_;
 
+    //oma alla
+    bool is_valid_parameters3(Params params);
+
+
 };
 
 #endif // UNIVERSITY_HH
