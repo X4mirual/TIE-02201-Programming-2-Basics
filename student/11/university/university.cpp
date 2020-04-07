@@ -80,7 +80,7 @@ void University::add_staff_to_course(Params params)
     courses_.at(params.at(0))->add_staff(accounts_.at(std::stoi(params.at(1))));
 }
 
-void University::add_course(Params params) // TIE-02200 "Ohjelmointi 2" - kurssitunnus kurssinimi
+void University::add_course(Params params) // TIE-02200 "Ohjelmointi 2"
 {
     if ( courses_.find(params.at(0)) != courses_.end() ){
         std::cout << ALREADY_EXISTS << std::endl;
@@ -125,15 +125,15 @@ void University::sign_up_on_course(Params params) { // TIE-02200 K2020 111111
     }
     Course* the_course = courses_.at(params.at(0));
     Instance* the_instance = the_course->get_instance(params.at(1));
-    if(not the_instance->can_be_singned_up_on(utils::today)) {
-        return;
-    }
     Account* the_attendee = accounts_.at(stoi(params.at(2)));
 
     // Checking if student is attending instance is done on instance side,
     // because otherwise student could enroll and complete same instance
     // multiple times
     if(the_instance->is_attending(the_attendee)) {
+        return;
+    }
+    if(not the_instance->can_be_singned_up_on(utils::today)) {
         return;
     }
     the_instance->add_attendee(the_attendee);
