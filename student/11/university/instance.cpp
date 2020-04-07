@@ -46,6 +46,7 @@ void Instance::remove_attendee(Account* attendee) {
 bool Instance::is_attending(Account* account)
 {
     if(find(attendees_.begin(), attendees_.end(), account) != attendees_.end()) {
+        std::cout << ALREADY_REGISTERED << std::endl;
         return true;
     }
     return false;

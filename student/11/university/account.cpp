@@ -32,6 +32,7 @@ std::string Account::get_email() {
 
 void Account::add_instance(Instance* instance) {
     current_.push_back(instance);
+    std::cout << SIGNED_UP << std::endl;
 }
 
 void Account::print_completed()

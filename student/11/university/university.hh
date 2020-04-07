@@ -159,8 +159,11 @@ private:
     // Keeps track of the next account id to be given
     int running_number_;
 
-    //oma alla
+    //omia alla
     bool is_valid_parameters3(Params params);
+    bool is_valid_account(int student_id);
+    bool is_valid_instance(std::string instance_name, std::string course_name);
+    bool is_valid_course(std::string course_name);
 
 
 };

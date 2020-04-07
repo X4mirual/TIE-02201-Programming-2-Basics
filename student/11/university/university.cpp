@@ -98,22 +98,19 @@ void University::add_course(Params params) // TIE-02200 "Ohjelmointi 2" - kurssi
 //Itse tehdyt alkavat
 
 
-// Virhetapaukset: jos instanssi on jo olemassa? DONE
+// Virhetapaukset: jos instanssi ON jo olemassa? DONE
 // Virhetapaukset: jos opintojaksoa ei ole olemassa? DONE
-void University::add_instance(Params params) { // TIE-02200 K2020 - kurssitunnut toteutuskerta
-    std::string course_name = params.at(0);
-    std::string instance_name = params.at(1);
-    if(courses_.find(course_name) == courses_.end()) {
-        std::cout << CANT_FIND << course_name << std::endl;
+void University::add_instance(Params params) { // TIE-02200 K2020
+    if(not is_valid_course(params.at(0))) {
         return;
     }
     Course* the_course = courses_.at(params.at(0)); //pointteri haluttuun kurssiin
-    if(the_course->has_instance(instance_name))
+    if(the_course->has_instance(params.at(1)))
     {
         std::cout << INSTANCE_EXISTS << std::endl;
         return;
     }
-    Instance* n_instance = new Instance(instance_name, utils::today);
+    Instance* n_instance = new Instance(params.at(1), utils::today);
     the_course->new_instance(n_instance);
 }
 
@@ -121,43 +118,40 @@ void University::add_instance(Params params) { // TIE-02200 K2020 - kurssitunnut
 //Virhetapaukset: opiskelija ei löydy (opiskelijatunnuksellaan) DONE
 //Virhetapaukset: kurssi ei löydy DONE
 //Virhetapaukset: toteutuskerta ei löydy DONE
-//Virhetapaukset: Today is after instance starting date DONE -EI COMMITISSA VIELÄ-
+//Virhetapaukset: Today is after instance starting date DONE
 void University::sign_up_on_course(Params params) { // TIE-02200 K2020 111111
     if(not is_valid_parameters3(params)) {
         return;
     }
-
     Course* the_course = courses_.at(params.at(0));
     Instance* the_instance = the_course->get_instance(params.at(1));
     if(not the_instance->can_be_singned_up_on(utils::today)) {
         return;
     }
-
     Account* the_attendee = accounts_.at(stoi(params.at(2)));
 
     // Checking if student is attending instance is done on instance side,
     // because otherwise student could enroll and complete same instance
     // multiple times
     if(the_instance->is_attending(the_attendee)) {
-        std::cout << "Error: Student has already registered on this course." //siirrä tulostus Instanceen
-                  << std::endl;
         return;
     }
     the_instance->add_attendee(the_attendee);
+
+    // also prints confirmation of sign up
     the_attendee->add_instance(the_instance);
-    std::cout << "Signed up on the course instance." << std::endl; //siirrä tulostus Accounttiin
 }
 
+// Virhetapaukset: kurssi, toteutus, käyttäjä eivät ole olemassa DONE
 void University::complete_course(Params params) { // TIE-02200 S2019 111112
+    if(not is_valid_parameters3(params)) {
+        return;
+    }
     Course* the_course = courses_.at(params.at(0));
     Instance* the_instance = the_course->get_instance(params.at(1));
     int student_id = stoi(params.at(2));
 
-    if(not is_valid_parameters3(params)) {
-        return;
-    }
     Account* the_attendee = accounts_.at(student_id);
-
     if(the_attendee->is_not_attending(the_instance)) {
         return;
     }
@@ -166,15 +160,22 @@ void University::complete_course(Params params) { // TIE-02200 S2019 111112
     the_attendee->complete_course(the_instance, the_course);
 }
 
-void University::print_signups(Params params) {
+// Virhetapaukset: kurssi ei ole olemassa DONE
+void University::print_signups(Params params) { // TIE-02200
+    if(not is_valid_course(params.at(0))) {
+        return;
+    }
     Course* the_course = courses_.at(params.at(0));
     the_course->print_signups();
 }
 
-void University::print_study_state(Params params)
+// Virhetapaukset: käyttäjä ei ole olemassa DONE
+void University::print_study_state(Params params) // 111113
 {
-    int student_id = stoi(params.at(0));
-    Account* attendee = accounts_.at(student_id);
+    if(not is_valid_account(stoi(params.at(0)))) {
+        return;
+    }
+    Account* attendee = accounts_.at(stoi(params.at(0)));
     std::map<std::string, Course*>::iterator course_itr = courses_.begin();
 
     std::cout << "Current:" << std::endl;
@@ -187,13 +188,17 @@ void University::print_study_state(Params params)
     attendee->print_completed();
 }
 
-void University::print_completed(Params params)
+// Virhetapaukset: käyttäjä ei ole olemassa DONE
+void University::print_completed(Params params) // 111113
 {
+    if(not is_valid_account(stoi(params.at(0)))) {
+        return;
+    }
     Account* the_student = accounts_.at(stoi(params.at(0)));
     the_student->print_completed();
 }
 
-//Itse tehdyt loppuvat
+//Itse tehdyt loppuvat (+4)
 
 void University::set_date(Params params)
 {
@@ -219,25 +224,44 @@ void University::advance_by_period(Params)
     std::cout << std::endl;
 }
 
+// Omatekoiset
 bool University::is_valid_parameters3(Params params) // TIE-02200 S2019 111112
 {
-    std::string course_name = params.at(0);
-    std::string instance_name = params.at(1);
-    int student_id = stoi(params.at(2));
-
-    if(courses_.find(course_name) == courses_.end()) {
-        std::cout << CANT_FIND << course_name << std::endl;
+    if(not is_valid_course(params.at(0))) {
         return false;
     }
-    Course* the_course = courses_.at(course_name);
+    else if(not is_valid_instance(params.at(1), params.at(0))) {
+        return false;
+    }
+    else if(not is_valid_account(stoi(params.at(2)))) {
+        return false;
+    }
+    return true;
+}
 
+bool University::is_valid_account(int student_id) //priority 1
+{
+    if(accounts_.find(student_id) == accounts_.end()) {
+        std::cout << CANT_FIND << student_id << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool University::is_valid_instance(std::string instance_name, std::string course_name) //priority 3
+{
+    Course* the_course = courses_.at(course_name);
     if(not the_course->has_instance(instance_name)) {
         std::cout << CANT_FIND << instance_name << std::endl;
         return false;
     }
+    return true;
+}
 
-    else if(accounts_.find(student_id) == accounts_.end()) {
-        std::cout << CANT_FIND << student_id << std::endl;
+bool University::is_valid_course(std::string course_name) //priority 2
+{
+    if(courses_.find(course_name) == courses_.end()) {
+        std::cout << CANT_FIND << course_name << std::endl;
         return false;
     }
     return true;
