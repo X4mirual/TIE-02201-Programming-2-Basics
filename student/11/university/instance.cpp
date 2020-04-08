@@ -8,13 +8,6 @@ Instance::Instance(std::string instance_code, Date starting_date):
 {
 }
 
-Instance::~Instance()
-{
-    for(auto account : attendees_) {
-        delete account;
-    }
-}
-
 bool Instance::is_named(std::string name) {
     if(name == instance_code_) {
         return true;

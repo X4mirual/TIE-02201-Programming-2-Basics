@@ -40,11 +40,6 @@ public:
     Account(std::string full_name, std::string email, int account_number);
 
     /**
-     * @brief Account destructor
-     */
-    ~Account();
-
-    /**
      * @brief print
      * Print account info on one line
      */

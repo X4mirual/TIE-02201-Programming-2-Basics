@@ -43,11 +43,6 @@ public:
     Instance(std::string instance_code, Date starting_date);
 
     /**
-     * @brief Instance destructor
-     */
-    ~Instance();
-
-    /**
      * @brief is_named
      * @param name
      * @return true if Instance code is name, false otherwise
