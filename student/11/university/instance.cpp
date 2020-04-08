@@ -1,6 +1,4 @@
-#include "instance.hh" // kaikki omia lisäyksiä
-#include "course.hh"
-#include <iostream>
+#include "instance.hh"
 
 using namespace std;
 
@@ -8,6 +6,13 @@ Instance::Instance(std::string instance_code, Date starting_date):
     instance_code_(instance_code),
     starting_date_(starting_date)
 {
+}
+
+Instance::~Instance()
+{
+    for(auto account : attendees_) {
+        delete account;
+    }
 }
 
 bool Instance::is_named(std::string name) {
@@ -39,13 +44,12 @@ void Instance::add_attendee(Account* attendee) {
 }
 
 void Instance::remove_attendee(Account* attendee) {
-    auto index = find(attendees_.begin(), attendees_.end(), attendee);
-    attendees_.erase(index);
+    attendees_.erase(find(attendees_.begin(), attendees_.end(), attendee));
 }
 
-bool Instance::is_attending(Account* account)
+bool Instance::is_attending(Account* attendee)
 {
-    if(find(attendees_.begin(), attendees_.end(), account) != attendees_.end()) {
+    if(find(attendees_.begin(), attendees_.end(), attendee) != attendees_.end()) {
         std::cout << ALREADY_REGISTERED << std::endl;
         return true;
     }
@@ -60,9 +64,7 @@ bool Instance::can_be_singned_up_on(Date Uni_today) {
     if(Uni_today == starting_date_) {
         return true;
     }
-    cout << "Error: Can't sign up on instance after the starting date."
-         << endl;
-
+    cout << LATE << endl;
     return false;
 }
 

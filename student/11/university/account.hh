@@ -1,19 +1,26 @@
 /* Class: Account
-  * ----------
-  * Defines a student or a staff account in the university system.
-  *
-  * In the project, this class should be expanded to
-  * include study history of the account.
-  * */
+ * ----------
+ * TIE-02201/TIE-02207 SPRING 2020
+ * ----------
+ * Defines a student or a staff account in the university system. Keeps track
+ * of current and completed studies and person information.
+ *
+ * Program author
+ * Name: Lauri Hiltunen
+ * Student number: 274422
+ * UserID: hiltunen
+ * E-Mail: lauri.hiltunen@tuni.fi
+ * */
 #ifndef ACCOUNT_HH
 #define ACCOUNT_HH
-
-#include "date.hh"
+#include "instance.hh"
+#include "course.hh"
+#include "utils.hh"
 #include <string>
 #include <vector>
-#include <map>
 #include <iostream>
 
+// Foreward declarations
 class Instance;
 class Course;
 
@@ -33,7 +40,13 @@ public:
     Account(std::string full_name, std::string email, int account_number);
 
     /**
-     * @brief print account info on one line
+     * @brief Account destructor
+     */
+    ~Account();
+
+    /**
+     * @brief print
+     * Print account info on one line
      */
     void print() const;
 
@@ -43,28 +56,34 @@ public:
      */
     std::string get_email();
 
-    /** TODO
-     * @brief
-     * @param
+    /**
+     * @brief add_instance
+     * @param instance
+     * Adds instance to accounts current studies
      */
     void add_instance(Instance* instance);
 
-    /** TODO
-     * @brief
-     * @param
+    /**
+     * @brief complete_course
+     * @param instance
+     * @param course
+     * Remove instance from current studies and add course to completed
      */
     void complete_course(Instance* instance, Course* course);
 
-    /** TODO
-     * @brief
-     * @param
+    /**
+     * @brief print_completed
+     * Print completed courses
      */
     void print_completed();
 
-
-    bool is_not_attending(Instance *the_instance);
-
-    bool is_attending(Instance* the_instance);
+    /**
+     * @brief is_attending
+     * @param the_instance
+     * @param print_error will message be printed if not attending
+     * @return true if account attending the_instance, false oterwise
+     */
+    bool is_attending(Instance* the_instance, bool print_error = false);
 
 
 private:

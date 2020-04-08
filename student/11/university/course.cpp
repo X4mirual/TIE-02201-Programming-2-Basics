@@ -8,7 +8,8 @@ Course::Course(std::string code, std::string name, int credits):
 
 Course::~Course()
 {
-    for ( Instance* inst : instances_ ){
+    for (Instance* inst : instances_)
+    {
         delete inst;
     }
 }
@@ -16,7 +17,8 @@ Course::~Course()
 void Course::print_info(bool print_new_line)
 {
     std::cout << course_code_ << " : " << name_;
-    if(print_new_line) {
+    if(print_new_line)
+    {
         std::cout << std::endl;
     }
 }
@@ -25,7 +27,8 @@ void Course::print_staff()
 {
 
     std::cout << "* Staff: " << std::endl;
-    for (auto acc : course_staff_ ){
+    for (auto acc : course_staff_)
+    {
         acc->print();
     }
 }
@@ -37,14 +40,16 @@ void Course::print_long_info()
     print_staff();
     std::cout << "* Instances: " << std::endl;
 
-    for ( auto instance : instances_ ){
+    for ( auto instance : instances_ )
+    {
         instance->print();
     }
 }
 
 void Course::print_signups()
 {
-    for ( auto inst : instances_ ){
+    for ( auto inst : instances_ )
+    {
         inst->print();
         inst->print_students();
     }
@@ -73,8 +78,10 @@ void Course::new_instance(Instance *n_instance)
 
 bool Course::has_instance(const std::string &name)
 {
-    for ( auto inst : instances_ ){
-        if ( inst->is_named(name)){
+    for ( auto inst : instances_ )
+    {
+        if ( inst->is_named(name))
+        {
             return true;
         }
     }
@@ -83,8 +90,10 @@ bool Course::has_instance(const std::string &name)
 
 Instance *Course::get_instance(std::string name)
 {
-    for ( Instance* inst : instances_ ){
-        if ( inst->is_named(name) ){
+    for ( Instance* inst : instances_ )
+    {
+        if ( inst->is_named(name) )
+        {
             return inst;
         }
     }
@@ -101,32 +110,15 @@ int Course::get_credits() const
     return credits_;
 }
 
-/*
 void Course::print_attended(Account* attendee)
 {
-    for ( Instance* instance : instances_ ){
-        if (instance->is_attending(attendee)){
-            std::cout << course_code_ << " : " << name_
-            << " " << instance->get_name() << std::endl;
-        }
-    }
-}*/
-
-void Course::print_attended(Account* attendee)
-{
-    for(Instance* instance : instances_){
-        if(attendee->is_attending(instance)){
+    for(Instance* instance : instances_)
+    {
+        if(attendee->is_attending(instance))
+        {
             std::cout << course_code_ << " : " << name_
             << " " << instance->get_name() << std::endl;
         }
     }
 }
-
-
-
-
-
-
-
-
 

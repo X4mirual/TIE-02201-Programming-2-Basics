@@ -1,7 +1,4 @@
 #include "account.hh"
-#include "utils.hh"
-#include "instance.hh"
-#include "course.hh"
 
 Account::Account(std::string full_name, std::string email, int account_number):
     full_name_(full_name),
@@ -15,7 +12,17 @@ Account::Account(std::string full_name, std::string email, int account_number):
     first_name_ = name.front();
 }
 
-// TO DO: Destructor?
+Account::~Account()
+{
+    for(auto instance : current_)
+    {
+        delete instance;
+    }
+    for(auto course : completed_)
+    {
+        delete course;
+    }
+}
 
 
 void Account::print() const
@@ -26,13 +33,23 @@ void Account::print() const
               << email_ << std::endl;
 }
 
-std::string Account::get_email() {
+std::string Account::get_email()
+{
     return email_;
 }
 
-void Account::add_instance(Instance* instance) {
+void Account::add_instance(Instance* instance)
+{
     current_.push_back(instance);
     std::cout << SIGNED_UP << std::endl;
+}
+
+void Account::complete_course(Instance* instance, Course* course)
+{
+    completed_.push_back(course);
+    auto instance_index = find(current_.begin(), current_.end(), instance);
+    current_.erase(instance_index);
+    std::cout << COMPLETED << std::endl;
 }
 
 void Account::print_completed()
@@ -45,32 +62,19 @@ void Account::print_completed()
     std::cout << "Total credits: " << tot_credits << std::endl;
 }
 
-bool Account::is_not_attending(Instance* the_instance)
-{
-    if(find(current_.begin(), current_.end(), the_instance) == current_.end()) {
-        std::cout << NO_SIGNUPS << std::endl;
-        return true;
-    }
-    return false;
-}
-
-bool Account::is_attending(Instance* the_instance)
+bool Account::is_attending(Instance* the_instance, bool print_error)
 {
     for(auto instance : current_) {
         if(instance == the_instance) {
             return true;
         }
     }
+    // if the_instance not in current_
+    if(print_error == true) {
+        std::cout << NO_SIGNUPS << std::endl;
+    }
     return false;
 }
-
-void Account::complete_course(Instance* instance, Course* course) {
-    completed_.push_back(course);
-    auto instance_index = find(current_.begin(), current_.end(), instance);
-    current_.erase(instance_index);
-    std::cout << COMPLETED << std::endl;
-}
-
 
 
 

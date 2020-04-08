@@ -5,8 +5,16 @@
  * Class that represents a simple university with students, staff and courses
  * with instances.
  *
- * Note: Students shouldn't need to make changes to the existing functions
- * or their implementations.
+ * Author of methods: add_instance, sign_up_on_course, complete_course,
+ * print_signups, print_study_state, print_completed, is_valid_parameters3,
+ * is_valid_account, is_valid_instance, is_valid_course
+ * Name: Lauri Hiltunen
+ * Student number: 274422
+ * UserID: hiltunen
+ * E-Mail: lauri.hiltunen@tuni.fi
+ *
+ * Note: Above author has contributed only to said methods in this class
+ *
  * */
 #ifndef UNIVERSITY_HH
 #define UNIVERSITY_HH
@@ -38,15 +46,17 @@ public:
     /**
      * @brief add_course
      * @param params: course code, name
-     * Adds a neew course to the system.
+     * Adds a new course to the system.
      * If course with given code is found from the system, gives an error.
      */
     void add_course(Params params);
+
     /**
      * @brief print_courses
      * Prints short info of all courses in the system.
      */
     void print_courses(Params);
+
     /**
      * @brief print_course
      * @param params: course code
@@ -63,11 +73,13 @@ public:
      * this gives an error.
      */
     void add_account(Params params);
+
     /**
      * @brief print_accounts
      * Print all accounts found in the system.
      */
     void print_accounts(Params);
+
     /**
      * @brief print_account_info
      * @param params: account number
@@ -75,6 +87,7 @@ public:
      * If account is not found from the system, gives an error.
      */
     void print_account_info(Params params);
+
     /**
      * @brief add_staff_to_course
      * @param params: course code, account number
@@ -100,6 +113,7 @@ public:
      * instance named correctly.
      */
     void sign_up_on_course(Params params);
+
     /**
      * @brief complete_course
      * @param params: course code, instance name, account number
@@ -108,6 +122,7 @@ public:
      * signup is found.
      */
     void complete_course(Params params);
+
     /**
      * @brief print_signups
      * @param params: course code
@@ -123,6 +138,7 @@ public:
      * If no account is found, gives an error.
      */
     void print_study_state(Params params);
+
     /**
      * @brief print_completed
      * @param params: account number
@@ -139,33 +155,59 @@ public:
      * parameters is unfit, it will just be replaced with default.
      */
     void set_date(Params);
+
     /**
      * @brief advance_date
      * @param params: days
      * Advances the date by given amount of days.
      */
     void advance_date(Params params);
+
     /**
      * @brief advance_by_period
      * Advances the date by 1 period length.
      */
     void advance_by_period(Params);
+
 private:
-    // <Account number, Account*>
     std::map<int, Account*> accounts_;
-    // <Course code, Course*>
     std::map<std::string, Course*> courses_;
 
     // Keeps track of the next account id to be given
     int running_number_;
 
-    //omia alla
+    /**
+     * @brief is_valid_parameters3
+     * @param params
+     * @return true if given account, instance and course are valid
+     * Gather three if statements together for cleaner methods
+     */
     bool is_valid_parameters3(Params params);
+
+    /**
+     * @brief is_valid_account
+     * @param student_id
+     * @return true if student with given id exists, otherwise false
+     * Print error message if no student with given id exists
+     */
     bool is_valid_account(int student_id);
+
+    /**
+     * @brief is_valid_instance
+     * @param instance_name
+     * @param course_name
+     * @return true if given course has instance with given name, otherwise false
+     * Print error message if false
+     */
     bool is_valid_instance(std::string instance_name, std::string course_name);
+
+    /**
+     * @brief is_valid_course
+     * @param course_name
+     * @return true if course with given name exists, otherwise false
+     * Print error message if false
+     */
     bool is_valid_course(std::string course_name);
-
-
 };
 
 #endif // UNIVERSITY_HH

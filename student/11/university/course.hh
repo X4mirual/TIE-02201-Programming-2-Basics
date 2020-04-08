@@ -2,19 +2,28 @@
  * ----------
  * TIE-02201/TIE-02207 SPRING 2020
  * ----------
- * Class that represents a single course, with name and code, staff and instances.
+ * Class that represents a single course, with name and code, staff and
+ * instances.
  *
+ * Author of print_attended method
+ * Name: Lauri Hiltunen
+ * Student number: 274422
+ * UserID: hiltunen
+ * E-Mail: lauri.hiltunen@tuni.fi
  *
- * Note: Students shouldn't need to make changes to this file.
+ * Notes: print_attended is the only part of class (method) made by Lauri
  * */
 #ifndef COURSE_HH
 #define COURSE_HH
-
+#include "instance.hh"
+#include "account.hh"
 #include <string>
 #include <vector>
 #include <iostream>
-#include "account.hh"
-#include "instance.hh"
+
+// Foreward declarations
+class Account;
+class Instance;
 
 const std::string STAFF_ADDED = "A new staff member has been added.";
 const std::string INSTANCE_ADDED = "A new instance has been added.";
@@ -25,13 +34,15 @@ class Course
 public:
     /**
      * @brief Course
-     * @param code unique code for the course, used a s id
+     * @param code unique code for the course, used as id
      * @param name
      * @param credits
      */
     Course( std::string code, std::string name, int credits = 5);
 
-    // Constructor. Also deletes the created instances, if any.
+    /**
+     * @brief Course destructor
+     */
     ~Course();
 
     /**
@@ -74,6 +85,7 @@ public:
      * @note Course will handle the deletion of all instances associated with it
      */
     void new_instance(Instance* n_instance);
+
     /**
      * @brief has_instance
      * @param name
@@ -100,6 +112,12 @@ public:
      */
     int get_credits() const;
 
+    /**
+     * @brief print_attended
+     * @param attendee
+     * @note only method made by Lauri
+     * Print courses attended by attendee
+     */
     void print_attended(Account* attendee);
 
 private:
