@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>535</width>
+    <height>358</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>30</x>
       <y>80</y>
-      <width>211</width>
+      <width>191</width>
       <height>101</height>
      </rect>
     </property>
@@ -81,13 +81,43 @@
      <string>TextLabel</string>
     </property>
    </widget>
+   <widget class="QSpinBox" name="spinBoxRed">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>90</y>
+      <width>49</width>
+      <height>29</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBoxGreen">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>120</y>
+      <width>49</width>
+      <height>29</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBoxBlue">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>150</y>
+      <width>49</width>
+      <height>29</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>535</width>
      <height>25</height>
     </rect>
    </property>
@@ -104,5 +134,102 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>horizontalSliderRed</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxRed</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>140</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>147</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxRed</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSliderRed</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>182</x>
+     <y>139</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSliderGreen</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxGreen</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>159</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxGreen</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSliderGreen</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>237</x>
+     <y>168</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>174</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSliderBlue</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxBlue</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>201</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>241</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxBlue</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSliderBlue</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>178</x>
+     <y>205</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
