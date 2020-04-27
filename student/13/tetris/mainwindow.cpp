@@ -40,10 +40,77 @@ MainWindow::MainWindow(QWidget *parent) :
     // tetromino by calling: distr(randomEng) in a suitable method.
 
     // Add more initial settings and connect calls, when needed.
+
+    timer = new QTimer;
+    timer->setInterval(1000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(moveTetrominoDown()));
+
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
+
+
+void MainWindow::on_dropTetromino_clicked() {
+    std::vector<QGraphicsRectItem*> thisTetromino;
+
+    QBrush redBrush(Qt::red);
+    QPen blackPen(Qt::black);
+
+    int i = 0;
+    int num;
+    while(i < 8) {
+        num = tetrominos_.at(1).at(i); //... .at(3). ... choose which type of tetromino
+        qDebug() << i << num;
+        if(num == 1) {
+            thisTetromino.push_back( scene_->addRect((BORDER_RIGHT/2 - SQUARE_SIDE*2) + (i%4)*SQUARE_SIDE ,
+                            (i/4)*SQUARE_SIDE, SQUARE_SIDE, SQUARE_SIDE, blackPen, redBrush) );
+        }
+        ++i;
+    }
+    tetrominoes_.push_back(thisTetromino);
+    timer->start();
+}
+
+void MainWindow::moveTetrominoDown() {
+    std::vector<QGraphicsRectItem*> tetromino = tetrominoes_.at(0);//tetrominoes_.end() - 1);
+
+    //Move each square down until it reaches border
+    for(auto square : tetromino) {
+        if(scene_->sceneRect().contains(square->x(), square->y() + 2*SQUARE_SIDE)) {
+            square->moveBy(0, SQUARE_SIDE);
+        }
+        // if _tetromino_ (not each square) can't move down anymore
+        else {
+            timer->stop();
+            return;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
