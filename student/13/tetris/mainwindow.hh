@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QGraphicsScene>
+#include <QGraphicsItem> //itemAt
 #include <QGraphicsRectItem>
 #include <random>
 #include <QDebug>

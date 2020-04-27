@@ -87,6 +87,13 @@ void MainWindow::moveTetrominoDown() {
             timer->stop();
             return;
         }
+        for(auto tet_vec_itr = tetrominoes_.begin(); tet_vec_itr != tetrominoes_.end() -1; ++tet_vec_itr) {
+            for(auto stillSquare: (*tet_vec_itr)) {
+                if(square->x() == stillSquare->x() && square->y() + SQUARE_SIDE == stillSquare->y()) {
+                    timer->stop();
+                    return;
+                }
+        }}
     }
     for(auto square : tetromino) {
         square->moveBy(0, SQUARE_SIDE);
