@@ -51,6 +51,22 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+void MainWindow::keyPressEvent(QKeyEvent* event) {
+    // changing the color of the circle between red and blue
+    if(event->key() == Qt::Key_Space) {
+        on_dropTetromino_clicked();
+    }
+    if(event->key() == Qt::Key_D) {
+        moveTetromino(1,0);
+    }
+    if(event->key() == Qt::Key_A) {
+        moveTetromino(-1,0);
+    }
+    if(event->key() == Qt::Key_S) {
+        moveTetromino(0,1);
+    }
+}
+
 
 void MainWindow::on_dropTetromino_clicked() {
     std::vector<QGraphicsRectItem*> thisTetromino;
@@ -78,30 +94,39 @@ void MainWindow::on_dropTetromino_clicked() {
 }
 
 void MainWindow::moveTetrominoDown() {
+    moveTetromino(0,1);
+}
+
+// Order tetromino to move in direction of coordinate modifiers
+void MainWindow::moveTetromino(int x_modifier, int y_modifier) {
     //tetromino to be moved is last tetromino added to vector
     std::vector<QGraphicsRectItem*> tetromino = tetrominoes_.at(tetrominoes_.size() - 1);
 
     //Each square of tetromino must be within scene after move or no square will not be moved
     for(auto square : tetromino) {
-        if(not scene_->sceneRect().contains(square->x(), square->y() + SQUARE_SIDE)) {
-            timer->stop();
+        if(not scene_->sceneRect().contains(square->x() + x_modifier*SQUARE_SIDE, square->y() + y_modifier*SQUARE_SIDE)) {
             return;
         }
-        for(auto tet_vec_itr = tetrominoes_.begin(); tet_vec_itr != tetrominoes_.end() -1; ++tet_vec_itr) {
-            for(auto stillSquare: (*tet_vec_itr)) {
+        for(auto tetVecItr = tetrominoes_.begin(); tetVecItr != tetrominoes_.end() -1; ++tetVecItr) {
+            for(auto stillSquare: (*tetVecItr)) {
+                //Timer will not stop if there is a tetromino on the right (with same y-coordinate),
+                //but it will not move onto it
+                if(square->x() + x_modifier*SQUARE_SIDE == stillSquare->x() && square->y() == stillSquare->y()) {
+                    return;
+                }
+                //Once timer is stopped, last tetromino added to vector will not be moved again
+                //If there is a still square under moving square, stop movement downwards
                 if(square->x() == stillSquare->x() && square->y() + SQUARE_SIDE == stillSquare->y()) {
                     timer->stop();
                     return;
                 }
-        }}
+            }
+        }
     }
     for(auto square : tetromino) {
-        square->moveBy(0, SQUARE_SIDE);
+        square->moveBy(x_modifier*SQUARE_SIDE, y_modifier*SQUARE_SIDE);
     }
 }
-
-
-
 
 
 

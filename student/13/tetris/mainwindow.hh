@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <vector> //rbegin, rend
 #include <QRect> // moveTo
+#include <QKeyEvent> //read keystrockes
 
 /*
 TODO
@@ -28,10 +29,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void keyPressEvent(QKeyEvent* event) override;
 
 private slots:
     void on_dropTetromino_clicked();
     void moveTetrominoDown();
+    void moveTetromino(int x_modifier, int y_modifier);
 
 private:
     Ui::MainWindow* ui;
