@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <vector> //rbegin, rend
+#include <QRect> // moveTo
 
 /*
 TODO
@@ -77,7 +78,7 @@ private:
                                     {0,0,1,0,
                                     1,1,1,0},
                                     {0,1,1,0,
-                                     0,1,1,0},
+                                    0,1,1,0},
                                     {0,1,1,0,
                                     1,1,0,0},
                                     {0,1,0,0,
