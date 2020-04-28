@@ -12,6 +12,7 @@
 #include <vector> //rbegin, rend
 #include <QRect> // moveTo
 #include <QKeyEvent> //read keystrockes
+#include <iostream> // toString(seconds_played_/60)
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +32,7 @@ private slots:
     void moveTetromino(int x_modifier, int y_modifier);
     void mirrorTetromino();
 
+    void onTimeChange();
     void on_newGameButton_clicked();
 
 private:
@@ -39,6 +41,7 @@ private:
     QTimer* timer;
     std::vector<QColor> colours_ = {Qt::cyan, Qt::blue, Qt::magenta,
                                     Qt::yellow, Qt::green, Qt::darkMagenta, Qt::red};
+    int seconds_played_ = 0;
 
     // Constants describing scene coordinates
     // Copied from moving circle example and modified a bit
@@ -100,6 +103,8 @@ private:
     // More constants, attibutes, and methods
 
     void endGame();
+    void displayPlayedTime();
+    void removeFullRows();
 
 };
 

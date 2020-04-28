@@ -5,7 +5,8 @@
  * down yet) as it is the players own choice to perform badly.
  *
  * If tetromino stops so that there is no space for new tetromino (tetromino stops so that there is one row free space left),
- * then game has ended
+ * then game has ended.
+ * Moving tetromino sideways after it has stopped moving vertically automatically does not count into game time
 */
 
 
@@ -20,7 +21,7 @@
 TODO:
 -ohje käyttäjälle (pushButton, josta aukeaa toinen ikkuna?)
 
--pelissä siihen mennessä kulunut aika lasketaan ja näytetään pelaajalle (10p)
+
 -täysinäiset vaakarivit poistetaan (10p)
 
 */
@@ -31,7 +32,7 @@ Lisäominaisuudet:
 +5 7 tetrominoa
 +10 pysähtynyttä tetrominoa pystyy liikuttamaan sivuttaissuunnassa
 +5 peliasetelman voi palauttaa alkutilanteeseen (aloittaa uuden pelin) käynnistämättä ohjelmaa uudestaan
-
++10 display time played
 */
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -74,8 +75,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // Add more initial settings and connect calls, when needed.
 
     timer = new QTimer;
-    timer->setInterval(20); //TODO: make 1000
+    timer->setInterval(1000); //TODO: make 1000
     connect(timer, SIGNAL(timeout()), this, SLOT(moveTetrominoDown()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(onTimeChange()));
+    ui->displayPlayedTime->setPalette(Qt::red);
+    ui->displayPlayedTime->display("0:00");
 
 }
 
@@ -87,11 +91,9 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
     if(event->key() == Qt::Key_N) {
         on_newGameButton_clicked();
     }
-
     else if(ui->gameStatus->text() == "Game over!") {
         return;
     }
-
     else if(event->key() == Qt::Key_Space) {
         //Running timer means a tetromino is already falling
         if(not timer->isActive()) {
@@ -182,7 +184,12 @@ void MainWindow::moveTetromino(int x_modifier, int y_modifier) {
     }
 
     for(auto square : tetromino) {
-        //Move each square of moving tetromino
+        //Move each square of moving tetromino    std::string text = std::to_string(seconds_played_/60) + ":";
+        if(seconds_played_%60 < 10) {
+            text += "0";
+        }
+        text += std::to_string(seconds_played_%60);
+        ui->displayPlayedTime->display(QString::fromStdString(text));
         square->moveBy(x_modifier*SQUARE_SIDE, y_modifier*SQUARE_SIDE);
 
         //If square not moving downwards and there is no space for next tetromino, game has ended
@@ -191,6 +198,7 @@ void MainWindow::moveTetromino(int x_modifier, int y_modifier) {
             return;
         }
     }
+
 }
 
 void MainWindow::mirrorTetromino() {
@@ -203,12 +211,29 @@ void MainWindow::mirrorTetromino() {
 
 }
 
+void MainWindow::onTimeChange() {
+    ++seconds_played_;
+    displayPlayedTime();
+}
+
 void MainWindow::endGame() {
     ui->gameStatus->setText("Game over!");
     ui->dropTetrominoButton->setEnabled(false);
 }
 
+void MainWindow::displayPlayedTime() {
+    std::string text = std::to_string(seconds_played_/60) + ":";
+    if(seconds_played_%60 < 10) {
+        text += "0";
+    }
+    text += std::to_string(seconds_played_%60);
+    ui->displayPlayedTime->display(QString::fromStdString(text));
+}
 
+void MainWindow::removeFullRows()
+{
+
+}
 
 void MainWindow::on_newGameButton_clicked() {
     for(auto tetromino : tetrominoes_) {
@@ -221,6 +246,9 @@ void MainWindow::on_newGameButton_clicked() {
     ui->newGameButton->setEnabled(false);
     ui->dropTetrominoButton->setEnabled(true);
     ui->gameStatus->setText("Welcome! Press 'Next Tetromino' to play!");
+    timer->stop();
+    seconds_played_ = 0;
+    displayPlayedTime();
 }
 
 
