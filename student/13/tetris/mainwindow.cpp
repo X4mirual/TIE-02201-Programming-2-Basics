@@ -1,10 +1,11 @@
 /*Is this the right place for this?
  *
  * Tetrominos can be moved sideways after their automatic movement downwards has been stopped.
- * It is allowed to this way leave a tetromino "hanging in the air" (by calling a new tetromino to be dropped while other has not
- * been manually put down) as it is the players own choice to get a lesser score.
+ * It is allowed to this way leave a tetromino "hanging in the air" (by calling a new tetromino to be dropped while previous is not
+ * down yet) as it is the players own choice to perform badly.
  *
- * Jos tetrominon liike pystysuunnassa pysähtyy siten, että sen neliö osuu pelialueen yläosaan, peli on päättynyt
+ * If tetromino stops so that there is no space for new tetromino (tetromino stops so that there is one row free space left),
+ * then game has ended
 */
 
 
@@ -17,26 +18,21 @@
 
 /*
 TODO:
--disable buttons when tetromino is falling
--disable bttons when game has ended
+-ohje käyttäjälle (pushButton, josta aukeaa toinen ikkuna?)
 
--kun tetromino tippuu
-1.drop new -nappi on disabloitu
-2.välilyönnillä pudottaminen ei toimi
-
--kun kutsutaan endGame(), pelin tulee todella päättyä
-
-
-NOW:
-If any of tetromino's squares is at y==0, endGame()
-
-
-
-
-
+-pelissä siihen mennessä kulunut aika lasketaan ja näytetään pelaajalle (10p)
+-täysinäiset vaakarivit poistetaan (10p)
 
 */
 
+
+/*
+Lisäominaisuudet:
++5 7 tetrominoa
++10 pysähtynyttä tetrominoa pystyy liikuttamaan sivuttaissuunnassa
++5 peliasetelman voi palauttaa alkutilanteeseen (aloittaa uuden pelin) käynnistämättä ohjelmaa uudestaan
+
+*/
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -88,20 +84,21 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
+    if(event->key() == Qt::Key_N) {
+        on_newGameButton_clicked();
+    }
 
-    if(ui->gameStatus->text() == "Game over!") {
+    else if(ui->gameStatus->text() == "Game over!") {
         return;
     }
 
-
-    //Space drops new tetromino if there is no tetromino already falling
-    //Running timer means a tetromino is already falling
-    if(event->key() == Qt::Key_Space) {
+    else if(event->key() == Qt::Key_Space) {
+        //Running timer means a tetromino is already falling
         if(not timer->isActive()) {
             on_dropTetrominoButton_clicked();
         }
     }
-    if(event->key() == Qt::Key_A) {
+    else if(event->key() == Qt::Key_A) {
         moveTetromino(-1,0);
     }
     else if(event->key() == Qt::Key_S) {
@@ -114,21 +111,20 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
 
 void MainWindow::on_dropTetrominoButton_clicked() {
     std::vector<QGraphicsRectItem*> thisTetromino;
+    //Number of tetromino type
+    int tetrominoType = distr(randomEng);
 
-    //TODO: Make each tetromino have own colour
-    QBrush redBrush(Qt::red);
     QPen blackPen(Qt::black);
+    //QBrush Brush(Qt::red);
+    QBrush Brush(colours_.at(tetrominoType));
 
     unsigned int i = 0;
     QGraphicsRectItem* oneRect;
-
-    int n = distr(randomEng); //which tetromino type, enter int value if you want specific tetromino
-    int num;
-    while(i < tetrominos_.at(n).size()) {
-        num = tetrominos_.at(n).at(i);
+    while(i < tetrominos_.at(tetrominoType).size()) {
+        int num = tetrominos_.at(tetrominoType).at(i);
         if(num == 1) {
             //Jokainen neliö on luotava pisteeseen (x,y) = 0,0 jotta myöhemmin neliöiden ymmärtämä koordinaatisto alkaa tuosta psiteestä
-            oneRect = scene_->addRect(0, 0, SQUARE_SIDE, SQUARE_SIDE, blackPen, redBrush);
+            oneRect = scene_->addRect(0, 0, SQUARE_SIDE, SQUARE_SIDE, blackPen, Brush);
             oneRect->moveBy((BORDER_RIGHT/2 - SQUARE_SIDE*2) + (i%4)*SQUARE_SIDE, (i/4)*SQUARE_SIDE);
             thisTetromino.push_back(oneRect);
         }
@@ -146,7 +142,7 @@ void MainWindow::moveTetrominoDown() {
     moveTetromino(0,1);
 }
 
-// Move tetromino in direction of coordinate modifiers
+//Move tetromino in direction of coordinate modifiers
 //Movement enitiated at very end of method, return commands mean method execution does not get to point of initiating movement
 void MainWindow::moveTetromino(int x_modifier, int y_modifier) {
     //tetromino to be moved is last tetromino added to vector
@@ -170,18 +166,12 @@ void MainWindow::moveTetromino(int x_modifier, int y_modifier) {
                 if(square->x() + x_modifier*SQUARE_SIDE == stillSquare->x() && square->y() == stillSquare->y()) {
                     return;
                 }
-                //If there is a still square directly under moving square,
+
+                //If there is a still square directly under moving square
                 if(square->x() == stillSquare->x() && square->y() + SQUARE_SIDE == stillSquare->y()) {
                     //Stop movement downwards
                     timer->stop();
                     ui->dropTetrominoButton->setEnabled(true);
-
-                    //If timer is stopped (= tetromino is not falling) and if square is at highest point, end game
-                    //Without this game won't be ended before moving of tetromino
-                    if(square->y() == 0) {
-                        endGame();
-                        return;
-                    }
 
                     //There is a square directly under moving square so remove
                     //vertical movement but leave possibility for horizontal movement (ordered by user)
@@ -195,8 +185,8 @@ void MainWindow::moveTetromino(int x_modifier, int y_modifier) {
         //Move each square of moving tetromino
         square->moveBy(x_modifier*SQUARE_SIDE, y_modifier*SQUARE_SIDE);
 
-        //Game has ended if square is at y==0 after having chance to move
-        if(square->y() == 0) {
+        //If square not moving downwards and there is no space for next tetromino, game has ended
+        if(not timer->isActive() && square->y() == SQUARE_SIDE) {
             endGame();
             return;
         }
@@ -214,17 +204,17 @@ void MainWindow::mirrorTetromino() {
 }
 
 void MainWindow::endGame() {
-
     ui->gameStatus->setText("Game over!");
     ui->dropTetrominoButton->setEnabled(false);
 }
 
 
+
 void MainWindow::on_newGameButton_clicked() {
-    for(auto vector : tetrominoes_) {
-        for(QGraphicsRectItem *tetromino : vector) {
-            scene_->removeItem(tetromino);
-            delete tetromino;
+    for(auto tetromino : tetrominoes_) {
+        for(QGraphicsRectItem *square : tetromino) {
+            scene_->removeItem(square);
+            delete square;
         }
     }
     tetrominoes_ = {{}};
@@ -232,6 +222,8 @@ void MainWindow::on_newGameButton_clicked() {
     ui->dropTetrominoButton->setEnabled(true);
     ui->gameStatus->setText("Welcome! Press 'Next Tetromino' to play!");
 }
+
+
 
 
 

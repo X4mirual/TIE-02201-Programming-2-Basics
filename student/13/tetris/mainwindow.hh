@@ -13,17 +13,11 @@
 #include <QRect> // moveTo
 #include <QKeyEvent> //read keystrockes
 
-/*
-TODO
--dynaamisesti lisää napit (vs Qt:n graafisen suunnittelutyökalun avulla)
-*/
-
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -43,6 +37,8 @@ private:
     Ui::MainWindow* ui;
     QGraphicsScene* scene_;
     QTimer* timer;
+    std::vector<QColor> colours_ = {Qt::cyan, Qt::blue, Qt::magenta,
+                                    Qt::yellow, Qt::green, Qt::darkMagenta, Qt::red};
 
     // Constants describing scene coordinates
     // Copied from moving circle example and modified a bit
