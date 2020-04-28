@@ -32,9 +32,12 @@ public:
     void keyPressEvent(QKeyEvent* event) override;
 
 private slots:
-    void on_dropTetromino_clicked();
+    void on_dropTetrominoButton_clicked();
     void moveTetrominoDown();
     void moveTetromino(int x_modifier, int y_modifier);
+    void mirrorTetromino();
+
+    void on_newGameButton_clicked();
 
 private:
     Ui::MainWindow* ui;
@@ -99,6 +102,8 @@ private:
     std::uniform_int_distribution<int> distr;
 
     // More constants, attibutes, and methods
+
+    void endGame();
 
 };
 

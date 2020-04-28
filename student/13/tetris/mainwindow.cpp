@@ -1,5 +1,41 @@
+/*Is this the right place for this?
+ *
+ * Tetrominos can be moved sideways after their automatic movement downwards has been stopped.
+ * It is allowed to this way leave a tetromino "hanging in the air" (by calling a new tetromino to be dropped while other has not
+ * been manually put down) as it is the players own choice to get a lesser score.
+ *
+ * Jos tetrominon liike pystysuunnassa pysähtyy siten, että sen neliö osuu pelialueen yläosaan, peli on päättynyt
+*/
+
+
+
+
+
+
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
+
+/*
+TODO:
+-disable buttons when tetromino is falling
+-disable bttons when game has ended
+
+-kun tetromino tippuu
+1.drop new -nappi on disabloitu
+2.välilyönnillä pudottaminen ei toimi
+
+-kun kutsutaan endGame(), pelin tulee todella päättyä
+
+
+NOW:
+If any of tetromino's squares is at y==0, endGame()
+
+
+
+
+
+
+*/
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -42,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Add more initial settings and connect calls, when needed.
 
     timer = new QTimer;
-    timer->setInterval(200); //TODO: make 1000
+    timer->setInterval(20); //TODO: make 1000
     connect(timer, SIGNAL(timeout()), this, SLOT(moveTetrominoDown()));
 
 }
@@ -52,35 +88,44 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
-    // changing the color of the circle between red and blue
-    if(event->key() == Qt::Key_Space) {
-        on_dropTetromino_clicked();
+
+    if(ui->gameStatus->text() == "Game over!") {
+        return;
     }
-    if(event->key() == Qt::Key_D) {
-        moveTetromino(1,0);
+
+
+    //Space drops new tetromino if there is no tetromino already falling
+    //Running timer means a tetromino is already falling
+    if(event->key() == Qt::Key_Space) {
+        if(not timer->isActive()) {
+            on_dropTetrominoButton_clicked();
+        }
     }
     if(event->key() == Qt::Key_A) {
         moveTetromino(-1,0);
     }
-    if(event->key() == Qt::Key_S) {
+    else if(event->key() == Qt::Key_S) {
         moveTetromino(0,1);
+    }
+    else if(event->key() == Qt::Key_D) {
+        moveTetromino(1,0);
     }
 }
 
-
-void MainWindow::on_dropTetromino_clicked() {
+void MainWindow::on_dropTetrominoButton_clicked() {
     std::vector<QGraphicsRectItem*> thisTetromino;
 
+    //TODO: Make each tetromino have own colour
     QBrush redBrush(Qt::red);
     QPen blackPen(Qt::black);
 
-    int i = 0;
+    unsigned int i = 0;
     QGraphicsRectItem* oneRect;
-    int n = 6; //which tetromino type
+
+    int n = distr(randomEng); //which tetromino type, enter int value if you want specific tetromino
     int num;
     while(i < tetrominos_.at(n).size()) {
-        num = tetrominos_.at(n).at(i); //... .at(3). ... choose which type of tetromino
-        qDebug() << i << num;
+        num = tetrominos_.at(n).at(i);
         if(num == 1) {
             //Jokainen neliö on luotava pisteeseen (x,y) = 0,0 jotta myöhemmin neliöiden ymmärtämä koordinaatisto alkaa tuosta psiteestä
             oneRect = scene_->addRect(0, 0, SQUARE_SIDE, SQUARE_SIDE, blackPen, redBrush);
@@ -90,14 +135,19 @@ void MainWindow::on_dropTetromino_clicked() {
         ++i;
     }
     tetrominoes_.push_back(thisTetromino);
+    ui->gameStatus->setText("Playing!");
+    ui->newGameButton->setEnabled(true);
     timer->start();
+    ui->dropTetrominoButton->setEnabled(false);
 }
 
+//Timer requires parameterless slot
 void MainWindow::moveTetrominoDown() {
     moveTetromino(0,1);
 }
 
-// Order tetromino to move in direction of coordinate modifiers
+// Move tetromino in direction of coordinate modifiers
+//Movement enitiated at very end of method, return commands mean method execution does not get to point of initiating movement
 void MainWindow::moveTetromino(int x_modifier, int y_modifier) {
     //tetromino to be moved is last tetromino added to vector
     std::vector<QGraphicsRectItem*> tetromino = tetrominoes_.at(tetrominoes_.size() - 1);
@@ -105,28 +155,93 @@ void MainWindow::moveTetromino(int x_modifier, int y_modifier) {
     //Each square of tetromino must be within scene after move or no square will not be moved
     for(auto square : tetromino) {
         if(not scene_->sceneRect().contains(square->x() + x_modifier*SQUARE_SIDE, square->y() + y_modifier*SQUARE_SIDE)) {
+            //when tetromino is moving down and hits bottom floor
+            if(x_modifier == 0) {
+                timer->stop();
+                ui->dropTetrominoButton->setEnabled(true);
+            }
+            //prohibit sideways movement onto other tetromino by returning void
             return;
         }
         for(auto tetVecItr = tetrominoes_.begin(); tetVecItr != tetrominoes_.end() -1; ++tetVecItr) {
             for(auto stillSquare: (*tetVecItr)) {
-                //Timer will not stop if there is a tetromino on the right (with same y-coordinate),
-                //but it will not move onto it
+                //Tetromino will not move onto still tetromino on the right or left of it (with same y-coordinate),
+                //timer will not stop
                 if(square->x() + x_modifier*SQUARE_SIDE == stillSquare->x() && square->y() == stillSquare->y()) {
                     return;
                 }
-                //Once timer is stopped, last tetromino added to vector will not be moved again
-                //If there is a still square under moving square, stop movement downwards
+                //If there is a still square directly under moving square,
                 if(square->x() == stillSquare->x() && square->y() + SQUARE_SIDE == stillSquare->y()) {
+                    //Stop movement downwards
                     timer->stop();
-                    return;
+                    ui->dropTetrominoButton->setEnabled(true);
+
+                    //If timer is stopped (= tetromino is not falling) and if square is at highest point, end game
+                    //Without this game won't be ended before moving of tetromino
+                    if(square->y() == 0) {
+                        endGame();
+                        return;
+                    }
+
+                    //There is a square directly under moving square so remove
+                    //vertical movement but leave possibility for horizontal movement (ordered by user)
+                    y_modifier = 0;
                 }
             }
         }
     }
+
     for(auto square : tetromino) {
+        //Move each square of moving tetromino
         square->moveBy(x_modifier*SQUARE_SIDE, y_modifier*SQUARE_SIDE);
+
+        //Game has ended if square is at y==0 after having chance to move
+        if(square->y() == 0) {
+            endGame();
+            return;
+        }
     }
 }
+
+void MainWindow::mirrorTetromino() {
+    // {x,0,0,0,
+    //  0,x,0,0}
+    // stay in place in mirroring
+    // Mirror only if ticker is active?
+
+    std::vector<QGraphicsRectItem*> tetrominoSquares = tetrominoes_.at(tetrominoes_.size() - 1);
+
+}
+
+void MainWindow::endGame() {
+
+    ui->gameStatus->setText("Game over!");
+    ui->dropTetrominoButton->setEnabled(false);
+}
+
+
+void MainWindow::on_newGameButton_clicked() {
+    for(auto vector : tetrominoes_) {
+        for(QGraphicsRectItem *tetromino : vector) {
+            scene_->removeItem(tetromino);
+            delete tetromino;
+        }
+    }
+    tetrominoes_ = {{}};
+    ui->newGameButton->setEnabled(false);
+    ui->dropTetrominoButton->setEnabled(true);
+    ui->gameStatus->setText("Welcome! Press 'Next Tetromino' to play!");
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -24,17 +24,43 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="dropTetromino">
+   <widget class="QPushButton" name="dropTetrominoButton">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>20</y>
+      <x>100</x>
+      <y>100</y>
+      <width>121</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Next Tetromino</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gameStatus">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>10</y>
+      <width>291</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Welcome! Press 'Next Tetromino' to play!</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="newGameButton">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>40</y>
       <width>84</width>
       <height>28</height>
      </rect>
     </property>
     <property name="text">
-     <string>New</string>
+     <string>New Game</string>
     </property>
    </widget>
   </widget>
