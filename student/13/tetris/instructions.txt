@@ -1,0 +1,57 @@
+Käyttöohje Tetris-peliin
+Opintojakso: TIE-02201 Ohjelmointi 2: Perusteet
+
+Tekijä:
+Nimi: Lauri Hiltunen
+Opiskelijanumero: 274422
+Käyttäjätunnus: hiltunen
+Sähköposti: lauri.hiltunen@tuni.fi
+
+
+Näppäinkomennot:
+Välilyönti: tiputa uusi tetromino
+A: liikuta viimeisintä tetrominoa vasemmalle
+S: liikuta viimeisintä tetrominoa alas
+D: liikuta viimeisintä tetrominoa oikealle
+N: aloita uusi peli
+
+Tavoite pelissä:
+Perinteisessä Tetris-pelissä takoitus on täyttää vaakarivit tetrominojen neliöillä, jolloin vaakarivit poistuvat ja pelialueelle vapautuu lisää tilaa. Tässä Tetriksessä täydet vaakarivit eivät poistu, joten tavoite on mahdollisimman lyhyessä ajassa saada peli päättymään siten, että kenttä on täynnä - mahdollisimman harva neliö kentällä on tyhjä.
+
+Pelaaminen:
+Käynnistäessä ohjelman siirrytään suoraan tilaan, jossa pelaaminen voidaan aloittaa. Pelaaminen suoritetaan siten, että uusi tetromino vapautetaan putoamaan joko välilyönnillä tai "Next Tetromino"-painonapilla. Putoavan tetrominon sijaintiin vaikutetaan näppäimillä A, S ja D. Tetromino ei voi poistua pelialueelta tai mennä toisen tetrominon päälle. Kun tuon tetrominon pystysuuntainen liike on pysähtynyt, voidaan vapauttaa seuraava tetromino putoamaan. Muusta syystä tai kun ollaan riittävän tyytymättömiä suoritukseen, voidaan aloittaa uusi peli näppäimellä N tai "New Game"-painonappia painamalla. Peli päättyy kun tetrominon neliö on pelikentän ylimmällä tai toiseksi ylimmällä rivillä, koska tällöin seuraava tetromino ei mahdu pelialueelle. Pelin päättymisestä ilmoitetaan "Game over!"-tekstillä käyttöliittymän yläreunassa, missä lukee pelatessa "Playing!".
+
+Ajanlasku alkaa/jatkuu hetkenä, kun uusi tetromino vapautetaan tippumaan ja päättyy, kun tuon tetrominon ajastettu pystysuuntainen liike päättyy. Aluksi tetromino liikkuu alaspäin 1sec (1000ms) välein. Tetrominon putoaminen kuitenkin nopeutuu 30 pelisekunnin välein 100millisekunnilla. Nopeimmillaan tetromino liikkuu automaattisesti alaspäin 200ms välein. Tetrominon putoamista voi nopeuttaa käskemällä se liikkumaan alas (näppäin S). Viimeisimmäksi vapautettua tetrominoa on mahdollista liikuttaa (sekä sivuttaissuunnassa että alaspäin) sen automaattisen tippumisliikkeen päättymisen jälkeen ja tuona aikana liikkuminen ei kasvata laskettua peliaikaa. Tämä tarkoittaa että mahdollisimman lyhyeen laskettuun peliaikaan pyrkiessä on hedelmällistä saada tetromino osumaan korkeimmalla olevaan toiseen tetrominoon ja vasta sen jälkeen miettiä, minne viimeisimmäksi vapautetun tetrominon haluaa sijoittaa. Tetrominon putoamisen manuaalisen vauhdittamisen tärkeys pelin alussa korostuu pelin edetessä, kun peliaikalaskuri nopeutuu yhtälilla tetrominojen nopeutumisen kanssa.
+
+Pelaaja voi aloittaa uuden pelin milloin tahansa. Uuden pelin aloittaminen tyhjentää pelialueen ja nollaa aikalaskurin. Aikalaskurin tiedot eivät tallennu pelin jälkeiseksi ajaksi.
+
+
+
+Ohjelman luomisessa tehdyt päätökset:
+Tetrominotyyppejä ei ole nimetty ohjelmassa ja uusi tetromino luodaan arvottuna vektorin tetrominoBlueprint_ pohjalta. Tetromino luodaan 2x4 neliön alueelle. tetrominoBlueprint_:ssä on jokaiselle 2x4-alueen neliölle luku 1, jos tiettyyn neliöön tulisi luoda tetrominon neliö ja luku 0, jos tuo neliö jää tämän tetrominon kohdalla tyhjäksi.
+
+Jokainen tetromino koostuu neljästä QGraphicsRectItem-oliosta. Jokaiseen mainittuun olioon on luotu pointteri, joka on tallennettu vektoriin, joka sisältää yhden tetrominon neliöiden poitterit. Kaikki tetrominovektorit tallennetaan yhteen vektoriin. Näin toimimalla päästää yhdellä tavalla käsiksi kaikkiin kentällä oleviin tetrominoihin (ja niiden neliöihin). Tätä rakennetta käytetään tarkistamaan, missä muiden tetrominojen neliöt ovat, jotta tippuva tetromino ei mene niiden päälle. Ohjelmaa luodessa tämä lähestymistapa toimi luotettavammin kuin Qt:sta löytyvä tapa tarkistaa onko tietyssä pisteessä jotain.
+
+Koko peli on toteutettu MainWindow-oliossa annettuun ohjelmapohjaan osana TIE-02201-opintojaksoa Tampereen yliopistolla. Ohjelman luomisessa on hyödynnetty Qt Creatoria ja siksi esimerkiksi käyttöliittymän painonappien slotit on nimetty Qt:n luonnollisella nimeämistavalla.
+
+
+
+Ohjelmaan toteutetut lisäominaisuudet:
++Peliin on toteutettu kaikki seitsemän erilaista tetrominoa.
++Jo pysähtynyttä tetrominoa pystyy liikuttamaan sivusuunnassa, jos se muuten on mahdollista ja jos seuraava tetromino ei ole vielä ilmestynyt pelialueelle.
++Pelissä käytetty aika lasketaan. Pelin aikana kerrotaan siihen mennessä kulunut aika.
++Pelin päätyttyä (tai muutenkin) peliasetelman voi palauttaa alkutilanteeseen, jolloin käyttäjä voi aloittaa uuden pelin käynnistämättä ohjelmaa uudelleen
++Tetrominojen putoaminen nopeutuu automaattisesti pelin edetessä.
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -10,30 +10,8 @@
 */
 
 
-
-
-
-
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
-
-/*
-TODO:
--ohje käyttäjälle (pushButton, josta aukeaa toinen ikkuna?)
--randomisti "Playing!"-tekstin tilalle jokin "huudahdus", kuten "Good job!" tai "Better luck with next tetromino!"
-
--täysinäiset vaakarivit poistetaan (10p)
-
-*/
-
-
-/*
-Lisäominaisuudet:
-+5 7 tetrominoa
-+10 pysähtynyttä tetrominoa pystyy liikuttamaan sivuttaissuunnassa
-+5 peliasetelman voi palauttaa alkutilanteeseen (aloittaa uuden pelin) käynnistämättä ohjelmaa uudestaan
-+10 display time played
-*/
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -68,19 +46,14 @@ MainWindow::MainWindow(QWidget *parent) :
     int seed = time(0); // You can change seed value for testing purposes
     randomEng.seed(seed);
     distr = std::uniform_int_distribution<int>(0, NUMBER_OF_TETROMINOS - 1);
-    distr(randomEng); // Wiping out the first random number (which is almost always 0)
-    // After the above settings, you can use randomEng to draw the next falling
-    // tetromino by calling: distr(randomEng) in a suitable method.
-
-    // Add more initial settings and connect calls, when needed.
+    distr(randomEng); // Wiping out the first random number
 
     timer = new QTimer;
-    timer->setInterval(1000); //TODO: make 1000
+    timer->setInterval(timerInterval_);
     connect(timer, SIGNAL(timeout()), this, SLOT(moveTetrominoDown()));
     connect(timer, SIGNAL(timeout()), this, SLOT(onTimeChange()));
     ui->displayPlayedTime->setPalette(Qt::red);
     ui->displayPlayedTime->display("0:00");
-
 }
 
 MainWindow::~MainWindow() {
@@ -123,9 +96,12 @@ void MainWindow::on_dropTetrominoButton_clicked() {
     while(i < tetrominoBlueprint_.at(tetrominoType).size()) {
         int num = tetrominoBlueprint_.at(tetrominoType).at(i);
         if(num == 1) {
-            //Each square is created at (x,y) = (0,0) so that later the square "knows" its coordinates right
-            oneRect = scene_->addRect(0, 0, SQUARE_SIDE, SQUARE_SIDE, blackPen, Brush);
-            oneRect->moveBy((BORDER_RIGHT/2 - SQUARE_SIDE*2) + (i%4)*SQUARE_SIDE, (i/4)*SQUARE_SIDE);
+            //Each square is created at (x,y) = (0,0) so that later the square
+            //"knows" its coordinates right
+            oneRect = scene_->addRect(0, 0, SQUARE_SIDE, SQUARE_SIDE, blackPen,
+                                      Brush);
+            oneRect->moveBy((BORDER_RIGHT/2 - SQUARE_SIDE*2) +
+                            (i%4)*SQUARE_SIDE, (i/4)*SQUARE_SIDE);
             thisTetromino.push_back(oneRect);
         }
         ++i;
@@ -142,7 +118,33 @@ void MainWindow::moveTetrominoDown() {
     moveTetromino(0,1);
 }
 
-void MainWindow::tetMovementGameWalls(QGraphicsRectItem* square, int& xModifier, int& yModifier) {
+void MainWindow::onTimeChange() {
+    ++seconds_played_;
+    displayPlayedTime();
+    updateDifficulty();
+}
+
+void MainWindow::on_newGameButton_clicked() {
+    for(auto tetromino : tetrominoes_) {
+        for(QGraphicsRectItem *square : tetromino) {
+            scene_->removeItem(square);
+            delete square;
+        }
+    }
+    tetrominoes_ = {{}};
+    ui->newGameButton->setEnabled(false);
+    ui->dropTetrominoButton->setEnabled(true);
+    ui->gameStatus->setText("Welcome! Press 'Next Tetromino' to play!");
+    timer->stop();
+    seconds_played_ = 0;
+    timerInterval_ = 1000;
+    timer->setInterval(timerInterval_);
+    displayPlayedTime();
+}
+
+void MainWindow::tetMovementGameWalls(QGraphicsRectItem* square,
+                                      int& xModifier, int& yModifier) {
+
     if(not scene_->sceneRect().contains(square->x() + xModifier*SQUARE_SIDE,
                                     square->y() + yModifier*SQUARE_SIDE)) {
 
@@ -158,26 +160,28 @@ void MainWindow::tetMovementGameWalls(QGraphicsRectItem* square, int& xModifier,
     }
 }
 
-void MainWindow::tetMovementOtherTetrominoes(QGraphicsRectItem* square, QGraphicsRectItem* otherSquare, int& xModifier, int& yModifier) {
+void MainWindow::tetMovementOtherTetrominoes(QGraphicsRectItem* square,
+            QGraphicsRectItem* otherSquare, int& xModifier, int& yModifier) {
     //Tetromino will not move onto still tetromino on the right or
     //left of it (with same y-coordinate, thus make xModifier zero)
-    if(square->x() + xModifier*SQUARE_SIDE == otherSquare->x() && square->y() == otherSquare->y()) {
+    if(square->x() + xModifier*SQUARE_SIDE == otherSquare->x() && square->y()
+                                                        == otherSquare->y()) {
         xModifier = 0;
     }
 
     //If there is a still square directly under moving square
-    if(square->x() == otherSquare->x() && square->y() + SQUARE_SIDE == otherSquare->y()) {
+    if(square->x() == otherSquare->x() && square->y() + SQUARE_SIDE ==
+                                                        otherSquare->y()) {
         //Stop movement downwards
         timer->stop();
         ui->dropTetrominoButton->setEnabled(true);
 
-        //There is a square directly under moving square so remove
-        //vertical movement but leave possibility for horizontal movement (ordered by user, hence no return command here)
+        //There is a square directly under moving square so remove vertical
+        //movement
         yModifier = 0;
     }
 }
 
-//Movement initiated at very end of method
 void MainWindow::moveTetromino(int xModifier = 0, int yModifier = 1) {
     //Tetromino to be moved is last tetromino added to vector of tetrominoes
     std::vector<QGraphicsRectItem*> tetromino =
@@ -188,9 +192,11 @@ void MainWindow::moveTetromino(int xModifier = 0, int yModifier = 1) {
         tetMovementGameWalls(square, xModifier, yModifier);
 
         //Last tetromino (the one moving) not taken into loop
-        for(auto tetVecItr = tetrominoes_.begin(); tetVecItr != tetrominoes_.end() -1; ++tetVecItr) {
+        for(auto tetVecItr = tetrominoes_.begin(); tetVecItr !=
+                                        tetrominoes_.end() -1; ++tetVecItr) {
             for(auto otherSquare : (*tetVecItr)) {
-                tetMovementOtherTetrominoes(square, otherSquare, xModifier, yModifier);
+                tetMovementOtherTetrominoes(square, otherSquare, xModifier,
+                                                                yModifier);
             }
         }
     }
@@ -213,13 +219,9 @@ void MainWindow::checkAndSetGameOver(QGraphicsRectItem* square) {
     }
 }
 
-void MainWindow::onTimeChange() {
-    ++seconds_played_;
-    displayPlayedTime();
-}
-
 void MainWindow::displayPlayedTime() {
     std::string text = std::to_string(seconds_played_/60) + ":";
+    //Time is 1:02, not 1:2
     if(seconds_played_%60 < 10) {
         text += "0";
     }
@@ -227,112 +229,11 @@ void MainWindow::displayPlayedTime() {
     ui->displayPlayedTime->display(QString::fromStdString(text));
 }
 
-void MainWindow::removeFullRows() {
-
-    int y = 480; //BORDER_DOWN;
-    while(y > 0) {
-        int x = 240; //BORDER_RIGHT;
-        if(isFullRow(x,y)) { //viimeisin lisäys
-            qDebug() << "Full row (x,y):" << x << y;
-            removeRow(y);
-            return; //HÄR
-        }
-        y -= 20; //SQUARE_SIDE
+void MainWindow::updateDifficulty() {
+    if(seconds_played_ % 30 == 0 && timerInterval_ >= 200) {
+        timerInterval_ -= 100;
+        timer->setInterval(timerInterval_);
     }
 }
-
-bool MainWindow::isFullRow(int x, int y) {
-    if(scene_->itemAt(x, y, QTransform()) == nullptr) {
-        qDebug() << "Empty coordinates (x,y):" << x << y;
-        return false;
-    }
-    else if (x == 0) {
-        return true;
-    }
-    else {
-        return isFullRow(x - 20, y);
-    }
-}
-
-void MainWindow::removeRow(int y) {
-    int x = BORDER_RIGHT;
-    while(x > 0) {
-        qDebug() << "Trying to remove at (x,y)" << x << y;
-        QGraphicsItem* square = scene_->itemAt(x, y, QTransform());
-        scene_->removeItem( square );
-        for(auto tet_vec : tetrominoes_) {
-            tet_vec.erase(std::remove(tet_vec.begin(), tet_vec.end(), square), tet_vec.end());
-        }
-        qDebug() << "Succesfully removed at (x,y)" << x << y;
-        x -= 20;
-    }
-
-    //move squares above this y-coordinate one step downwards
-
-    y -= SQUARE_SIDE;
-    while(y > 0) {
-        x = BORDER_RIGHT;
-        while(x > 0) {
-            QGraphicsItem* square = scene_->itemAt(x, y, QTransform());
-            if(square != nullptr) {
-                square->moveBy(0, SQUARE_SIDE);
-                qDebug() << "moved to (x,y):" << x << y+20;
-            }
-            x -= SQUARE_SIDE;
-        }
-        y -= SQUARE_SIDE;
-    }
-}
-
-void MainWindow::on_newGameButton_clicked() {
-    for(auto tetromino : tetrominoes_) {
-        for(QGraphicsRectItem *square : tetromino) {
-            scene_->removeItem(square);
-            delete square;
-        }
-    }
-    tetrominoes_ = {{}};
-    ui->newGameButton->setEnabled(false);
-    ui->dropTetrominoButton->setEnabled(true);
-    ui->gameStatus->setText("Welcome! Press 'Next Tetromino' to play!");
-    timer->stop();
-    seconds_played_ = 0;
-    displayPlayedTime();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
