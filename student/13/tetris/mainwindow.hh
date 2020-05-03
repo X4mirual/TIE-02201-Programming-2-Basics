@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_HH
+﻿#ifndef MAINWINDOW_HH
 #define MAINWINDOW_HH
 
 #include <QMainWindow>
@@ -29,9 +29,6 @@ public:
 private slots:
     void on_dropTetrominoButton_clicked();
     void moveTetrominoDown();
-    void moveTetromino(int x_modifier, int y_modifier);
-    void mirrorTetromino();
-
     void onTimeChange();
     void on_newGameButton_clicked();
 
@@ -40,7 +37,7 @@ private:
     QGraphicsScene* scene_;
     QTimer* timer;
     std::vector<QColor> colours_ = {Qt::cyan, Qt::blue, Qt::magenta,
-                                    Qt::yellow, Qt::green, Qt::darkMagenta, Qt::red};
+                            Qt::yellow, Qt::green, Qt::darkMagenta, Qt::red};
     int seconds_played_ = 0;
 
     // Constants describing scene coordinates
@@ -57,26 +54,10 @@ private:
     // Number of vertical cells (places for tetromino components)
     const int ROWS = BORDER_DOWN / SQUARE_SIDE;
 
-    // Constants for different tetrominos and the number of them
-    enum Tetromino_kind {HORIZONTAL,
-                         LEFT_CORNER,
-                         RIGHT_CORNER,
-                         SQUARE,
-                         STEP_UP_RIGHT,
-                         PYRAMID,
-                         STEP_UP_LEFT,
-                         NUMBER_OF_TETROMINOS};
-    // From the enum values above, only the last one is needed in this template.
-    // Recall from enum type that the value of the first enumerated value is 0,
-    // the second is 1, and so on.
-    // Therefore the value of the last one is 7 at the moment.
-    // Remove those tetromino kinds above that you do not implement,
-    // whereupon the value of NUMBER_OF_TETROMINOS changes, too.
-    // You can also remove all the other values, if you do not need them,
-    // but most probably you need a constant value for NUMBER_OF_TETROMINOS.
 
-    // VAI TETROMINOT NÄIN?
-    std::vector<std::vector<int>> tetrominos_ = {
+
+    // How different tetrominos are configured (1: square, 0: no square)
+    std::vector<std::vector<int>> tetrominoBlueprint_ = {
                                     {1,1,1,1,
                                     0,0,0,0},
                                     {1,0,0,0,
@@ -92,19 +73,73 @@ private:
                                     {1,1,0,0,
                                     0,1,1,0}
                                    };
+    const int NUMBER_OF_TETROMINOS = tetrominoBlueprint_.size();
 
+    //Tetrominoes that are on game area
     std::vector<std::vector<QGraphicsRectItem*>> tetrominoes_;
-
 
     // For randomly selecting the next dropping tetromino
     std::default_random_engine randomEng;
     std::uniform_int_distribution<int> distr;
 
-    // More constants, attibutes, and methods
+    /**
+     * @brief moveTetromino
+     * @param xModifier
+     * @param yModifier
+     * Move newest tetromino in direction of coordinate modifiers
+     */
+    void tetMovementGameWalls(QGraphicsRectItem* square, int& xModifier, int& yModifier);
 
-    void endGame();
+    /**
+     * @brief moveTetromino
+     * @param xModifier
+     * @param yModifier
+     * Move newest tetromino in direction of coordinate modifiers
+     */
+    void tetMovementOtherTetrominoes(QGraphicsRectItem* square, QGraphicsRectItem* otherSquare, int& xModifier, int& yModifier);
+
+    /**
+     * @brief moveTetromino
+     * @param xModifier
+     * @param yModifier
+     * Move newest tetromino in direction of coordinate modifiers
+     */
+    void moveTetromino(int xModifier, int yModifier);
+
+    /**
+     * @brief print_info
+     * @param print_new_line
+     * Print short course info, if print_new_line, the also a newline at the end.
+     */
+    void checkAndSetGameOver(QGraphicsRectItem* square);
+
+    /**
+     * @brief print_info
+     * @param print_new_line
+     * Print short course info, if print_new_line, the also a newline at the end.
+     */
     void displayPlayedTime();
+
+    /**
+     * @brief print_info
+     * @param print_new_line
+     * Print short course info, if print_new_line, the also a newline at the end.
+     */
     void removeFullRows();
+
+    /**
+     * @brief print_info
+     * @param print_new_line
+     * Print short course info, if print_new_line, the also a newline at the end.
+     */
+    bool isFullRow(int x, int y);
+
+    /**
+     * @brief print_info
+     * @param print_new_line
+     * Print short course info, if print_new_line, the also a newline at the end.
+     */
+    void removeRow(int y);
 
 };
 
