@@ -1,15 +1,3 @@
-/*Is this the right place for this?
- *
- * Tetrominos can be moved sideways after their automatic movement downwards has been stopped.
- * It is allowed to this way leave a tetromino "hanging in the air" (by calling a new tetromino to be dropped while previous is not
- * down yet) as it is the players own choice to perform badly.
- *
- * If tetromino stops so that there is no space for new tetromino (tetromino stops so that there is one row free space left),
- * then game has ended.
- * Moving tetromino sideways after it has stopped moving vertically automatically does not count into game time
-*/
-
-
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
 
@@ -48,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     distr = std::uniform_int_distribution<int>(0, NUMBER_OF_TETROMINOS - 1);
     distr(randomEng); // Wiping out the first random number
 
-    timer = new QTimer;
+    timer = new QTimer(this);
     timer->setInterval(timerInterval_);
     connect(timer, SIGNAL(timeout()), this, SLOT(moveTetrominoDown()));
     connect(timer, SIGNAL(timeout()), this, SLOT(onTimeChange()));
@@ -91,18 +79,20 @@ void MainWindow::on_dropTetrominoButton_clicked() {
     QPen blackPen(Qt::black);
     QBrush Brush(colours_.at(tetrominoType));
 
+    QGraphicsRectItem* aSquare;
     unsigned int i = 0;
-    QGraphicsRectItem* oneRect;
     while(i < tetrominoBlueprint_.at(tetrominoType).size()) {
         int num = tetrominoBlueprint_.at(tetrominoType).at(i);
+        //1 means there is a square on this lication in this tetromino
+        //0 means there isn't
         if(num == 1) {
             //Each square is created at (x,y) = (0,0) so that later the square
             //"knows" its coordinates right
-            oneRect = scene_->addRect(0, 0, SQUARE_SIDE, SQUARE_SIDE, blackPen,
+            aSquare = scene_->addRect(0, 0, SQUARE_SIDE, SQUARE_SIDE, blackPen,
                                       Brush);
-            oneRect->moveBy((BORDER_RIGHT/2 - SQUARE_SIDE*2) +
+            aSquare->moveBy((BORDER_RIGHT/2 - SQUARE_SIDE*2) +
                             (i%4)*SQUARE_SIDE, (i/4)*SQUARE_SIDE);
-            thisTetromino.push_back(oneRect);
+            thisTetromino.push_back(aSquare);
         }
         ++i;
     }
@@ -119,7 +109,7 @@ void MainWindow::moveTetrominoDown() {
 }
 
 void MainWindow::onTimeChange() {
-    ++seconds_played_;
+    ++secondsPlayed_;
     displayPlayedTime();
     updateDifficulty();
 }
@@ -136,7 +126,7 @@ void MainWindow::on_newGameButton_clicked() {
     ui->dropTetrominoButton->setEnabled(true);
     ui->gameStatus->setText("Welcome! Press 'Next Tetromino' to play!");
     timer->stop();
-    seconds_played_ = 0;
+    secondsPlayed_ = 0;
     timerInterval_ = 1000;
     timer->setInterval(timerInterval_);
     displayPlayedTime();
@@ -147,7 +137,6 @@ void MainWindow::tetMovementGameWalls(QGraphicsRectItem* square,
 
     if(not scene_->sceneRect().contains(square->x() + xModifier*SQUARE_SIDE,
                                     square->y() + yModifier*SQUARE_SIDE)) {
-
         //If tetromino is moving down and hits bottom floor
         if(xModifier == 0) {
             timer->stop();
@@ -188,13 +177,14 @@ void MainWindow::moveTetromino(int xModifier = 0, int yModifier = 1) {
             tetrominoes_.at(tetrominoes_.size() - 1);
 
     for(auto square : tetromino) {
-        //If tetromino tries to move outside of game area
+        //Check if tetromino tries to move outside of game area
         tetMovementGameWalls(square, xModifier, yModifier);
 
         //Last tetromino (the one moving) not taken into loop
         for(auto tetVecItr = tetrominoes_.begin(); tetVecItr !=
                                         tetrominoes_.end() -1; ++tetVecItr) {
             for(auto otherSquare : (*tetVecItr)) {
+                //Check if tetromino tries to move onto other tetromino
                 tetMovementOtherTetrominoes(square, otherSquare, xModifier,
                                                                 yModifier);
             }
@@ -220,17 +210,17 @@ void MainWindow::checkAndSetGameOver(QGraphicsRectItem* square) {
 }
 
 void MainWindow::displayPlayedTime() {
-    std::string text = std::to_string(seconds_played_/60) + ":";
+    std::string text = std::to_string(secondsPlayed_/60) + ":";
     //Time is 1:02, not 1:2
-    if(seconds_played_%60 < 10) {
+    if(secondsPlayed_%60 < 10) {
         text += "0";
     }
-    text += std::to_string(seconds_played_%60);
+    text += std::to_string(secondsPlayed_%60);
     ui->displayPlayedTime->display(QString::fromStdString(text));
 }
 
 void MainWindow::updateDifficulty() {
-    if(seconds_played_ % 30 == 0 && timerInterval_ >= 200) {
+    if(secondsPlayed_ % 30 == 0 && timerInterval_ >= 200) {
         timerInterval_ -= 100;
         timer->setInterval(timerInterval_);
     }

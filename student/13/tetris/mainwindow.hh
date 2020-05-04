@@ -76,7 +76,7 @@ private:
     int timerInterval_ = 1000;
     std::vector<QColor> colours_ = {Qt::cyan, Qt::blue, Qt::magenta,
                             Qt::yellow, Qt::green, Qt::darkMagenta, Qt::red};
-    int seconds_played_ = 0;
+    int secondsPlayed_ = 0;
 
     //Constants describing scene coordinates
     const int BORDER_UP = 0;
@@ -110,7 +110,7 @@ private:
                                    };
     const int NUMBER_OF_TETROMINOS = tetrominoBlueprint_.size();
 
-    //Tetrominoes that are on game area
+    //Tetrominoes that are in game area
     std::vector<std::vector<QGraphicsRectItem*>> tetrominoes_;
 
     //For randomly selecting the next dropping tetromino
@@ -162,7 +162,7 @@ private:
 
     /**
      * @brief updateDifficulty
-     * Make timer faster (tetrominos fall faster and game time count faster)
+     * Make timer faster (tetrominos fall faster and game time counts faster)
      * every 30 sec
      */
     void updateDifficulty();
